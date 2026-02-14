@@ -7,7 +7,7 @@ function App() {
 
   useEffect(() => {
     // Test backend connection
-    fetch('http://localhost:5000/api/tourists')
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/tourists`)
       .then(r => r.json())
       .then(setTourists)
       .catch(console.error);
