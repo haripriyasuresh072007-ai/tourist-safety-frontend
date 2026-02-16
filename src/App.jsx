@@ -1,217 +1,359 @@
-import { useState } from 'react';
-import Navbar from './components/Navbar';
+import { useState } from "react";
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [tourists, setTourists] = useState([]);
-  const [alerts, setAlerts] = useState([]);
-  const [count, setCount] = useState(0);
-
-  const login = () => {
-    setUser({ role: 'admin', name: 'Police Command' });
-  };
-
-  const logout = () => {
-    setUser(null);
-  };
-
-  const addTourist = () => {
-    const newTourist = {
-      id: Date.now(),
-      name: `Tourist #${tourists.length + 1}`,
-      digitalID: `TRV${Date.now().toString().slice(-6)}`,
-      safetyScore: 85,
-      location: { lat: 13.9167, lng: 78.4867 }
-    };
-    setTourists(prev => [...prev, newTourist]);
-  };
-
-  const triggerAlert = () => {
-    const newAlert = {
-      id: Date.now(),
-      efirId: `EFIR${Date.now().toString().slice(-6)}`,
-      priority: 'high',
-      nearestPolice: 'Ranipet PS'
-    };
-    setAlerts(prev => [newAlert, ...prev]);
-  };
-
-  if (!user) {
-    return (
-      <div style={{ 
-        minHeight: '100vh', 
-        background: 'linear-gradient(135deg, #FEF9E7 0%, #F8FAFC 100%)',
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        padding: '40px',
-        textAlign: 'center'
-      }}>
-        <div style={{ 
-          maxWidth: '500px', 
-          background: 'rgba(255,255,255,0.95)', 
-          borderRadius: '24px', 
-          padding: '60px 40px', 
-          boxShadow: '0 25px 50px rgba(0,0,0,0.1)',
-          backdropFilter: 'blur(20px)'
-        }}>
-          <div style={{ 
-            width: '100px', height: '100px', 
-            background: 'linear-gradient(135deg, #1E3A8A, #3B82F6)', 
-            borderRadius: '24px', 
-            margin: '0 auto 30px', 
-            display: 'flex', alignItems: 'center', justifyContent: 'center' 
-          }}>
-            <div style={{ fontSize: '48px' }}>🛡️</div>
-          </div>
-          <h1 style={{ fontSize: '48px', fontWeight: '900', color: '#1E3A8A', margin: '0 0 20px' }}>
-            SafeTravel AI
-          </h1>
-          <p style={{ fontSize: '20px', color: '#666', marginBottom: '40px' }}>
-            Ranipet District Police Command Center - Science Day 2026
-          </p>
-          <button
-            onClick={login}
-            style={{
-              padding: '20px 60px',
-              fontSize: '20px',
-              fontWeight: 'bold',
-              background: 'linear-gradient(135deg, #1E3A8A, #3B82F6)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '20px',
-              cursor: 'pointer',
-              boxShadow: '0 15px 35px rgba(30,58,138,0.4)',
-              transition: 'all 0.3s'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.transform = 'scale(1.05)';
-              e.target.style.boxShadow = '0 20px 45px rgba(30,58,138,0.5)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'scale(1)';
-              e.target.style.boxShadow = '0 15px 35px rgba(30,58,138,0.4)';
-            }}
-          >
-            👮‍♂️ Enter Police Dashboard
-          </button>
-          <div style={{ marginTop: '30px', fontSize: '16px', color: '#D2B48C' }}>
-            Demo Credentials: admin@police.gov / 123456
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const [tourists, setTourists] = useState(0);
+  const [alerts, setAlerts] = useState(0);
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #FEF9E7 0%, #F8FAFC 100%)' }}>
-      {/* Topbar */}
-      <div style={{ 
-        background: 'rgba(255,255,255,0.95)', 
-        backdropFilter: 'blur(20px)', 
-        borderBottom: '1px solid #F5F5DC', 
-        position: 'sticky', top: 0, zIndex: 50,
-        padding: '20px 40px'
-      }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <div style={{ 
-              width: '60px', height: '60px', 
-              background: 'linear-gradient(135deg, #1E3A8A, #3B82F6)', 
-              borderRadius: '16px', 
-              display: 'flex', alignItems: 'center', justifyContent: 'center' 
-            }}>
-              <div style={{ fontSize: '32px', color: 'white' }}>🛡️</div>
+    <div
+      style={{
+        minHeight: "100vh",
+        margin: 0,
+        padding: 0,
+        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        background: "linear-gradient(135deg, #FEF9E7 0%, #F8FAFC 100%)",
+      }}
+    >
+      {/* Top bar */}
+      <header
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+          background: "rgba(255,255,255,0.96)",
+          borderBottom: "1px solid #E5E7EB",
+          backdropFilter: "blur(18px)",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1120px",
+            margin: "0 auto",
+            padding: "16px 24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div
+              style={{
+                width: 52,
+                height: 52,
+                borderRadius: 18,
+                background:
+                  "linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 18px 35px rgba(15,23,42,0.4)",
+              }}
+            >
+              <span style={{ fontSize: 30, color: "white" }}>🛡️</span>
             </div>
             <div>
-              <h1 style={{ fontSize: '32px', fontWeight: '900', color: '#1E3A8A', margin: 0 }}>
-                SafeTravel Command
-              </h1>
-              <p style={{ margin: 0, color: '#666', fontSize: '16px' }}>{user.role.toUpperCase()} DASHBOARD</p>
+              <div
+                style={{
+                  fontSize: 22,
+                  fontWeight: 900,
+                  letterSpacing: 0.4,
+                  color: "#111827",
+                }}
+              >
+                SafeTravel AI
+              </div>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#6B7280",
+                }}
+              >
+                Ranipet District Police – Command Dashboard
+              </div>
             </div>
           </div>
-          <button 
-            onClick={logout}
+
+          <div style={{ textAlign: "right" }}>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: "#1E3A8A",
+                textTransform: "uppercase",
+              }}
+            >
+              Science Expo 2026
+            </div>
+            <div style={{ fontSize: 12, color: "#6B7280" }}>
+              Govt. School – Tourist Safety Monitoring
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main content */}
+      <main
+        style={{
+          maxWidth: "1120px",
+          margin: "0 auto",
+          padding: "32px 24px 48px",
+        }}
+      >
+        {/* Hero card */}
+        <section
+          style={{
+            marginBottom: 32,
+            borderRadius: 24,
+            padding: 24,
+            background: "rgba(255,255,255,0.96)",
+            border: "1px solid #E5E7EB",
+            boxShadow: "0 22px 45px rgba(15,23,42,0.10)",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 24,
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ maxWidth: 520 }}>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: 1.4,
+                textTransform: "uppercase",
+                color: "#3B82F6",
+                marginBottom: 6,
+              }}
+            >
+              Live Tourist Safety Monitoring
+            </div>
+            <h1
+              style={{
+                fontSize: 30,
+                lineHeight: 1.2,
+                fontWeight: 900,
+                color: "#111827",
+                margin: 0,
+                marginBottom: 8,
+              }}
+            >
+              Blue & Beige Police Command Center Interface
+            </h1>
+            <p
+              style={{
+                fontSize: 14,
+                color: "#4B5563",
+                margin: 0,
+              }}
+            >
+              This dashboard shows how police can track tourists, respond to
+              panic alerts, and view live safety status for Ranipet district.
+              Built with React + Vite and deployed on Vercel.
+            </p>
+          </div>
+
+          <div
             style={{
-              padding: '12px 24px',
-              background: '#fee2e2',
-              color: '#dc2626',
-              border: 'none',
-              borderRadius: '12px',
-              fontWeight: 'bold',
-              cursor: 'pointer'
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+              minWidth: 220,
             }}
           >
-            Logout
-          </button>
-        </div>
-      </div>
+            <button
+              type="button"
+              onClick={() => setTourists((n) => n + 1)}
+              style={{
+                padding: "12px 18px",
+                borderRadius: 999,
+                border: "none",
+                background:
+                  "linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%)",
+                color: "white",
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: "pointer",
+                boxShadow: "0 18px 30px rgba(37,99,235,0.4)",
+              }}
+            >
+              ➕ Simulate Tourist Check‑in
+            </button>
+            <button
+              type="button"
+              onClick={() => setAlerts((n) => n + 1)}
+              style={{
+                padding: "10px 18px",
+                borderRadius: 999,
+                border: "1px solid #FCA5A5",
+                background: "#FEF2F2",
+                color: "#B91C1C",
+                fontWeight: 700,
+                fontSize: 13,
+                cursor: "pointer",
+              }}
+            >
+              🚨 Simulate Panic Alert
+            </button>
+          </div>
+        </section>
 
-      {/* Navbar */}
-      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-
-      {/* Main Content */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
-        {activeTab === 'overview' && (
-          <div>
-            <h2 style={{ fontSize: '36px', fontWeight: '900', color: '#1E3A8A', marginBottom: '30px' }}>
-              Command Center Overview
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px', marginBottom: '40px' }}>
-              <div style={{ 
-                height: '500px', 
-                background: 'rgba(255,255,255,0.8)', 
-                borderRadius: '24px', 
-                padding: '30px',
-                border: '3px solid #F5F5DC'
-              }}>
-                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1E3A8A', marginBottom: '20px' }}>
-                  🗺️ Live Safety Map - Ranipet District
-                </h3>
-                <div style={{ height: '400px', background: '#E5E7EB', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}>
-                  Interactive Map Coming Soon...
-                </div>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <div style={{ 
-                  padding: '40px', 
-                  background: 'rgba(255,255,255,0.8)', 
-                  borderRadius: '24px', 
-                  textAlign: 'center',
-                  border: '2px solid #F5F5DC'
-                }}>
-                  <div style={{ fontSize: '64px', marginBottom: '20px' }}>🚨</div>
-                  <div style={{ fontSize: '48px', fontWeight: '900', color: '#dc2626' }}>{alerts.length}</div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#1E3A8A' }}>Active Alerts</div>
-                </div>
-                <div style={{ 
-                  padding: '40px', 
-                  background: 'rgba(255,255,255,0.8)', 
-                  borderRadius: '24px', 
-                  textAlign: 'center',
-                  border: '2px solid #F5F5DC'
-                }}>
-                  <div style={{ fontSize: '64px', marginBottom: '20px' }}>🧳</div>
-                  <div style={{ fontSize: '48px', fontWeight: '900', color: '#059669' }}>{tourists.length}</div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#1E3A8A' }}>Tourists Tracked</div>
-                </div>
-              </div>
+        {/* Stats cards */}
+        <section
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: 20,
+            marginBottom: 32,
+          }}
+        >
+          <div
+            style={{
+              borderRadius: 20,
+              padding: 20,
+              background: "#0F172A",
+              color: "white",
+              boxShadow: "0 18px 40px rgba(15,23,42,0.55)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 13,
+                color: "#E5E7EB",
+                marginBottom: 4,
+              }}
+            >
+              Active Tourists
+            </div>
+            <div
+              style={{
+                fontSize: 34,
+                fontWeight: 900,
+                marginBottom: 6,
+              }}
+            >
+              {tourists}
+            </div>
+            <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+              Number of tourists currently registered in the system.
             </div>
           </div>
-        )}
 
-        {activeTab === 'tourists' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', flexWrap: 'wrap', gap: '20px' }}>
-              <h2 style={{ fontSize: '36px', fontWeight: '900', color: '#1E3A8A' }}>
-                Active Tourists ({tourists.length})
-              </h2>
-              <div style={{ display: 'flex', gap: '20px' }}>
-                <button 
-                  onClick={addTourist}
-                  style={{
-                    padding: '20px 40px',
-                    background: 'linear-gradient(135deg, #1E3A8A, #3B82F6)',
-                    color: 'white',
-                    border:
+          <div
+            style={{
+              borderRadius: 20,
+              padding: 20,
+              background: "white",
+              border: "1px solid #E5E7EB",
+              boxShadow: "0 16px 30px rgba(15,23,42,0.08)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 13,
+                color: "#6B7280",
+                marginBottom: 4,
+              }}
+            >
+              Panic Alerts Today
+            </div>
+            <div
+              style={{
+                fontSize: 34,
+                fontWeight: 900,
+                color: "#B91C1C",
+                marginBottom: 6,
+              }}
+            >
+              {alerts}
+            </div>
+            <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+              Generated using the red "Simulate Panic Alert" button.
+            </div>
+          </div>
+
+          <div
+            style={{
+              borderRadius: 20,
+              padding: 20,
+              background: "white",
+              border: "1px solid #F5F5DC",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 13,
+                color: "#78716C",
+                marginBottom: 4,
+              }}
+            >
+              Color Theme
+            </div>
+            <div
+              style={{
+                fontSize: 18,
+                fontWeight: 800,
+                color: "#1E3A8A",
+                marginBottom: 4,
+              }}
+            >
+              Blue & Beige – Govt. Grade
+            </div>
+            <div style={{ fontSize: 12, color: "#6B7280" }}>
+              Professional palette using navy blue for police UI and beige for
+              background, suitable for real‑world government dashboards.
+            </div>
+          </div>
+        </section>
+
+        {/* Explainer */}
+        <section
+          style={{
+            borderRadius: 20,
+            padding: 20,
+            background: "rgba(255,255,255,0.96)",
+            border: "1px solid #E5E7EB",
+            fontSize: 13,
+            color: "#4B5563",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 16,
+              fontWeight: 800,
+              color: "#111827",
+              marginBottom: 8,
+            }}
+          >
+            How to explain this at the expo
+          </div>
+          <ul style={{ paddingLeft: 20, margin: 0 }}>
+            <li>
+              This panel is the <b>police command dashboard</b> for tourists in
+              Ranipet.
+            </li>
+            <li>
+              The blue button simulates a tourist checking in at a hotel or
+              tourist spot.
+            </li>
+            <li>
+              The red button simulates a panic alert, such as harassment,
+              accident, or getting lost.
+            </li>
+            <li>
+              The counters update instantly, showing how police can monitor the
+              situation in real time.
+            </li>
+            <li>
+              This is built with modern web tech (React + Vite) and deployed on
+              Vercel, just like professional dashboards.
+            </li>
+          </ul>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+export default App;
