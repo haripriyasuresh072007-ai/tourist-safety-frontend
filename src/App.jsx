@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const translations = {
   en: {
@@ -26,7 +26,6 @@ const translations = {
     mapTitle: "Live Location Map",
     shareLocation: "Share my location",
     shareLinkLabel: "Share this live location link or QR code",
-    simulateTourist: "Simulate new tourist",
     simulateAlert: "Simulate panic alert",
     logout: "Logout",
     roleAdmin: "Admin",
@@ -62,7 +61,6 @@ const translations = {
     mapTitle: "நேரடி இருப்பிட வரைபடம்",
     shareLocation: "என் இருப்பிடத்தை பகிர்",
     shareLinkLabel: "இந்த இணைப்பு அல்லது QR மூலம் இருப்பிடத்தை பகிரலாம்",
-    simulateTourist: "புதிய சுற்றுலா பயணியை சேர்க்க (டெமோ)",
     simulateAlert: "அவசர அலாரம் (டெமோ)",
     logout: "வெளியேறு",
     roleAdmin: "ஆணையர்",
@@ -98,7 +96,6 @@ const translations = {
     mapTitle: "लाइव लोकेशन मानचित्र",
     shareLocation: "मेरा लोकेशन साझा करें",
     shareLinkLabel: "इस लिंक या QR कोड से लोकेशन साझा करें",
-    simulateTourist: "नया पर्यटक जोड़ें (डेमो)",
     simulateAlert: "पैनिक अलर्ट (डेमो)",
     logout: "लॉगआउट",
     roleAdmin: "एडमिन",
@@ -128,6 +125,11 @@ function App() {
   );
 
   const [shareUrl, setShareUrl] = useState("");
+
+  const [panicHold, setPanicHold] = useState(false);
+  const [panicTimerId, setPanicTimerId] = useState(null);
+
+  const tDict = t; // shorthand in inner components if needed
 
   const LanguageSwitcher = () => (
     <div className="flex items-center gap-2 text-xs sm:text-sm">
@@ -197,6 +199,7 @@ function App() {
       name: payload.name,
       email: payload.email,
       phone: payload.phone,
+      // if you later add emergency contacts, add them here
       registeredAt: new Date().toLocaleString(),
     };
     setTourists((prev) => [...prev, newTourist]);
@@ -204,9 +207,39 @@ function App() {
     setShowRegister(false);
   };
 
-  const simulateAlert = () => {
+  const triggerFullPanicFlow = () => {
     setAlerts((a) => a + 1);
-    alert("Panic alert triggered (demo). Admin counters updated.");
+    const locationText = position
+      ? `Location: https://www.google.com/maps?q=${position.lat},${position.lng}`
+      : "Location: last known or GPS unavailable.";
+    alert(
+      [
+        `1) Voice call automatically placed to emergency contacts (conceptual).`,
+        "2) If not answered, SMS is sent with:",
+        `   - Tourist details`,
+        `   - ${locationText}`,
+        "3) Same info goes to the nearby police control room.",
+        "",
+        "This expo demo simulates the flow without real calls/SMS.",
+      ].join("\n")
+    );
+  };
+
+  const startPanicHold = () => {
+    setPanicHold(true);
+    const id = setTimeout(() => {
+      setPanicHold(false);
+      triggerFullPanicFlow();
+    }, 3000);
+    setPanicTimerId(id);
+  };
+
+  const cancelPanicHold = () => {
+    setPanicHold(false);
+    if (panicTimerId) {
+      clearTimeout(panicTimerId);
+      setPanicTimerId(null);
+    }
   };
 
   const LoginPage = () => {
@@ -294,17 +327,7 @@ function App() {
 
   const RegisterPage = () => {
     const [form, setForm] = useState({ name: "", email: "", phone: "" });
-  const newTourist = {
-  id,
-  name: payload.name,
-  email: payload.email,
-  phone: payload.phone,
-  emergencyContacts: [
-    { name: payload.emergency1Name, phone: payload.emergency1Phone },
-    { name: payload.emergency2Name, phone: payload.emergency2Phone },
-  ],
-  registeredAt: new Date().toLocaleString(),
-};
+
     const onSubmit = (e) => {
       e.preventDefault();
       handleRegisterTourist(form);
@@ -421,7 +444,6 @@ function App() {
           />
         </div>
         <div className="px-4 py-4 border-t border-slate-200 space-y-2">
-
           <p className="text-[11px] text-slate-600">{t.shareExplanation}</p>
           {shareUrl && (
             <div className="mt-1">
@@ -434,7 +456,6 @@ function App() {
                   value={shareUrl}
                   readOnly
                 />
-                {/* QR code placeholder – you can explain this in expo */}
                 <div className="w-16 h-16 border border-slate-300 rounded-xl flex items-center justify-center text-[10px] text-slate-500">
                   QR
                 </div>
@@ -453,12 +474,12 @@ function App() {
 
   const AdminDashboard = () => (
     <div
-    className="min-h-screen"
-    style={{
-      background:
-        "radial-gradient(circle at top left, rgba(37,99,235,0.16), transparent 55%), radial-gradient(circle at bottom right, rgba(15,23,42,0.16), transparent 55%), #F3F4F6",
-    }}
-  >
+      className="min-h-screen"
+      style={{
+        background:
+          "radial-gradient(circle at top left, rgba(37,99,235,0.16), transparent 55%), radial-gradient(circle at bottom right, rgba(15,23,42,0.16), transparent 55%), #F3F4F6",
+      }}
+    >
       <header className="sticky top-0 z-20 bg-white/95 border-b border-slate-200 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -486,8 +507,8 @@ function App() {
         </div>
       </header>
 
-<main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-<section className="grid md:grid-cols-3 gap-6">
+      <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+        <section className="grid md:grid-cols-3 gap-6">
           <div className="rounded-3xl bg-white border border-slate-200 shadow-md p-4">
             <div className="text-xs font-semibold text-slate-500 mb-1">
               {t.activeTourists}
@@ -499,7 +520,7 @@ function App() {
               Shows tourists registered during this expo session.
             </div>
           </div>
-          <div className="rounded-3xl bg-white border border-slate-200 shadow-md p-4">
+          <div className="rounded-3xl bg-white border border-slate-200 shadow-md p-4 flex flex-col items-start">
             <div className="text-xs font-semibold text-slate-500 mb-1">
               {t.panicAlerts}
             </div>
@@ -507,21 +528,18 @@ function App() {
               {alerts}
             </div>
             <button
-  onMouseDown={startPanicHold}
-  onMouseUp={cancelPanicHold}
-  onMouseLeave={cancelPanicHold}
-  onTouchStart={startPanicHold}
-  onTouchEnd={cancelPanicHold}
-  className={`mt-4 inline-flex items-center justify-center w-16 h-16 rounded-full font-semibold text-[10px] shadow-lg transition ${
-    panicHold
-      ? "bg-[#B91C1C] text-white scale-95"
-      : "bg-[#DC2626] text-white hover:bg-[#B91C1C] hover:scale-105"
-  }`}
->
-  {panicHold ? "HOLD..." : "PANIC"}
-</button>
-
-              {t.simulateAlert}
+              onMouseDown={startPanicHold}
+              onMouseUp={cancelPanicHold}
+              onMouseLeave={cancelPanicHold}
+              onTouchStart={startPanicHold}
+              onTouchEnd={cancelPanicHold}
+              className={`mt-4 inline-flex items-center justify-center w-16 h-16 rounded-full font-semibold text-[10px] shadow-lg transition ${
+                panicHold
+                  ? "bg-[#B91C1C] text-white scale-95"
+                  : "bg-[#DC2626] text-white hover:bg-[#B91C1C] hover:scale-105"
+              }`}
+            >
+              {panicHold ? "HOLD..." : "PANIC"}
             </button>
           </div>
           <div className="rounded-3xl bg-white border border-slate-200 shadow-md p-4">
@@ -547,29 +565,29 @@ function App() {
             <div className="text-xs text-slate-500 py-4">{t.noTourists}</div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-xs">
-                <thead>
+              <table className="w-full text-xs border border-slate-200 rounded-xl overflow-hidden">
+                <thead className="bg-slate-50">
                   <tr className="text-left text-[11px] text-slate-500 border-b border-slate-200">
-                    <th className="py-2 pr-2">ID</th>
-                    <th className="py-2 pr-2">{t.name}</th>
-                    <th className="py-2 pr-2">{t.email}</th>
-                    <th className="py-2 pr-2">{t.phone}</th>
-                    <th className="py-2">Registered</th>
+                    <th className="py-2 px-3">ID</th>
+                    <th className="py-2 px-3">{t.name}</th>
+                    <th className="py-2 px-3">{t.email}</th>
+                    <th className="py-2 px-3">{t.phone}</th>
+                    <th className="py-2 px-3">Registered</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tourists.map((tr) => (
                     <tr
                       key={tr.id}
-                      className="border-b border-slate-100 last:border-0"
+                      className="border-b border-slate-100 last:border-0 hover:bg-slate-50/70"
                     >
-                      <td className="py-2 pr-2 font-mono text-[11px]">
+                      <td className="py-2 px-3 font-mono text-[11px]">
                         {tr.id}
                       </td>
-                      <td className="py-2 pr-2">{tr.name}</td>
-                      <td className="py-2 pr-2">{tr.email}</td>
-                      <td className="py-2 pr-2">{tr.phone}</td>
-                      <td className="py-2 text-[11px] text-slate-500">
+                      <td className="py-2 px-3">{tr.name}</td>
+                      <td className="py-2 px-3">{tr.email}</td>
+                      <td className="py-2 px-3">{tr.phone}</td>
+                      <td className="py-2 px-3 text-[11px] text-slate-500">
                         {tr.registeredAt}
                       </td>
                     </tr>
@@ -586,18 +604,19 @@ function App() {
   const TouristDashboard = () => {
     const myRecord =
       user?.role === "tourist"
-        ? tourists.find((t) => t.id === user.touristId || t.email === user.email)
+        ? tourists.find(
+            (t) => t.id === user.touristId || t.email === user.email
+          )
         : null;
 
     return (
       <div
-    className="min-h-screen"
-    style={{
-      background:
-        "radial-gradient(circle at top left, rgba(37,99,235,0.16), transparent 55%), radial-gradient(circle at bottom right, rgba(15,23,42,0.16), transparent 55%), #F3F4F6",
-    }}
-  >
-
+        className="min-h-screen"
+        style={{
+          background:
+            "radial-gradient(circle at top left, rgba(37,99,235,0.16), transparent 55%), radial-gradient(circle at bottom right, rgba(15,23,42,0.16), transparent 55%), #F3F4F6",
+        }}
+      >
         <header className="sticky top-0 z-20 bg-white/95 border-b border-slate-200 backdrop-blur-md">
           <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -616,65 +635,58 @@ function App() {
             <div className="flex items-center gap-3">
               <LanguageSwitcher />
               <button
-  onMouseDown={startPanicHold}
-  onMouseUp={cancelPanicHold}
-  onMouseLeave={cancelPanicHold}
-  onTouchStart={startPanicHold}
-  onTouchEnd={cancelPanicHold}
-  className={`mt-4 inline-flex items-center justify-center w-20 h-20 rounded-full font-semibold text-[11px] shadow-xl transition ${
-    panicHold
-      ? "bg-[#B91C1C] text-white scale-95"
-      : "bg-[#DC2626] text-white hover:bg-[#B91C1C] hover:scale-105"
-  }`}
->
-  {panicHold ? "HOLD 3s" : "PANIC"}
-</button>
-
+                onClick={handleLogout}
+                className="text-[11px] font-semibold px-3 py-1.5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+              >
                 {t.logout}
               </button>
             </div>
           </div>
         </header>
 
-<main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
+        <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
           <LiveMapCard />
 
-          <table className="w-full text-xs border border-slate-200 rounded-xl overflow-hidden">
-  <thead className="bg-slate-50">
-    <tr className="text-left text-[11px] text-slate-500 border-b border-slate-200">
-      <th className="py-2 px-3">ID</th>
-      <th className="py-2 px-3">{t.name}</th>
-      <th className="py-2 px-3">{t.email}</th>
-      <th className="py-2 px-3">{t.phone}</th>
-      <th className="py-2 px-3">Emergency contacts</th>
-      <th className="py-2 px-3">Registered</th>
-    </tr>
-  </thead>
-  <tbody>
-    {tourists.map((tr) => (
-      <tr
-        key={tr.id}
-        className="border-b border-slate-100 last:border-0 hover:bg-slate-50/70"
-      >
-        <td className="py-2 px-3 font-mono text-[11px]">{tr.id}</td>
-        <td className="py-2 px-3">{tr.name}</td>
-        <td className="py-2 px-3">{tr.email}</td>
-        <td className="py-2 px-3">{tr.phone}</td>
-        <td className="py-2 px-3 text-[11px] text-slate-600">
-          {tr.emergencyContacts && tr.emergencyContacts.length > 0
-            ? tr.emergencyContacts
-                .map((ec) => `${ec.name} (${ec.phone})`)
-                .join(", ")
-            : "—"}
-        </td>
-        <td className="py-2 px-3 text-[11px] text-slate-500">
-          {tr.registeredAt}
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-
+          <section className="rounded-3xl bg-white border border-slate-200 shadow-md p-4 space-y-3">
+            <div className="text-sm font-semibold text-slate-800">
+              {t.touristInfoPanel}
+            </div>
+            {myRecord ? (
+              <div className="text-xs text-slate-700 space-y-1">
+                <div>
+                  <span className="font-semibold">{t.name}: </span>
+                  {myRecord.name}
+                </div>
+                <div>
+                  <span className="font-semibold">{t.email}: </span>
+                  {myRecord.email}
+                </div>
+                <div>
+                  <span className="font-semibold">{t.phone}: </span>
+                  {myRecord.phone}
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  ID: {myRecord.id} • {myRecord.registeredAt}
+                </div>
+              </div>
+            ) : (
+              <div className="text-xs text-slate-500">{t.noTourists}</div>
+            )}
+            <button
+              onMouseDown={startPanicHold}
+              onMouseUp={cancelPanicHold}
+              onMouseLeave={cancelPanicHold}
+              onTouchStart={startPanicHold}
+              onTouchEnd={cancelPanicHold}
+              className={`mt-4 inline-flex items-center justify-center w-20 h-20 rounded-full font-semibold text-[11px] shadow-xl transition ${
+                panicHold
+                  ? "bg-[#B91C1C] text-white scale-95"
+                  : "bg-[#DC2626] text-white hover:bg-[#B91C1C] hover:scale-105"
+              }`}
+            >
+              {panicHold ? "HOLD 3s" : "PANIC"}
+            </button>
+          </section>
         </main>
       </div>
     );
