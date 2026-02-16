@@ -410,7 +410,8 @@ function App() {
             loading="lazy"
           />
         </div>
-        <div className="px-4 py-3 border-t border-slate-200 space-y-1">
+        <div className="px-4 py-4 border-t border-slate-200 space-y-2">
+
           <p className="text-[11px] text-slate-600">{t.shareExplanation}</p>
           {shareUrl && (
             <div className="mt-1">
@@ -469,8 +470,8 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-        <section className="grid md:grid-cols-3 gap-4">
+<main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+<section className="grid md:grid-cols-3 gap-6">
           <div className="rounded-3xl bg-white border border-slate-200 shadow-md p-4">
             <div className="text-xs font-semibold text-slate-500 mb-1">
               {t.activeTourists}
@@ -590,7 +591,7 @@ function App() {
           </div>
         </header>
 
-        <main className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+<main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
           <LiveMapCard />
 
           <section className="rounded-3xl bg-white border border-slate-200 shadow-md p-4 space-y-3">
