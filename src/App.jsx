@@ -1,7 +1,6 @@
 // src/App.jsx
 import React, { useState, useEffect } from "react";
 
-// Simple multilingual dictionary
 const translations = {
   en: {
     appTitle: "SafeTravel AI – Ranipet Command Center",
@@ -26,20 +25,21 @@ const translations = {
     panicAlerts: "Panic alerts triggered",
     mapTitle: "Live Location Map",
     shareLocation: "Share my location",
+    shareLinkLabel: "Share this live location link or QR code",
     simulateTourist: "Simulate new tourist",
     simulateAlert: "Simulate panic alert",
     logout: "Logout",
     roleAdmin: "Admin",
     roleTourist: "Tourist",
     demoInfo:
-      "Use admin@police.gov / 123456 for Admin, or register as a tourist.",
+      "Use admin@police.gov / 123456 for Admin, or register as a tourist. Tourist password (demo): 123456.",
     touristInfoPanel: "Tourist Information",
     noTourists: "No tourists registered yet.",
     shareExplanation:
-      "This uses your browser location to show how live tracking works.",
+      "Your browser location is used to show how live tracking and sharing would work in a real system.",
   },
   ta: {
-    appTitle: "SafeTravel AI – ராணிபேட்டை கட்டுப்பாட்டு மையம்",
+    appTitle: "SafeTravel AI – ராணிப்பேட்டை கட்டுப்பாட்டு மையம்",
     subtitle: "சுற்றுலா பயணிகளின் பாதுகாப்பு கண்காணிப்பு",
     language: "மொழி",
     english: "ஆங்கிலம்",
@@ -51,27 +51,28 @@ const translations = {
     loginButton: "உள்நுழை",
     notRegistered: "பதிவு செய்யவில்லையா?",
     registerHere: "பதிவு செய்யவும்",
-    registerTitle: "சுற்றுலா பயணி பதிவேடு",
+    registerTitle: "சுற்றுலா பயணி பதிவு",
     name: "பெயர்",
     phone: "மொபைல் எண்",
     backToLogin: "உள்நுழைவு திரைக்கு திரும்ப",
-    adminDashboard: "ஆணையர் டாஷ்போர்டு",
-    touristDashboard: "சுற்றுலா பயணி டாஷ்போர்டு",
+    adminDashboard: "ஆணையர் இயக்குபலகை",
+    touristDashboard: "சுற்றுலா பயணி இயக்குபலகை",
     activeTourists: "பதிவு செய்யப்பட்ட சுற்றுலா பயணிகள்",
-    panicAlerts: "அலாரம் அழைப்புகள்",
+    panicAlerts: "அவசர அலாரங்கள்",
     mapTitle: "நேரடி இருப்பிட வரைபடம்",
     shareLocation: "என் இருப்பிடத்தை பகிர்",
-    simulateTourist: "புதிய சுற்றுலா பயணியை பதிவு செய்து காட்டு",
-    simulateAlert: "அவசர அலாரம் சோதனை",
+    shareLinkLabel: "இந்த இணைப்பு அல்லது QR மூலம் இருப்பிடத்தை பகிரலாம்",
+    simulateTourist: "புதிய சுற்றுலா பயணியை சேர்க்க (டெமோ)",
+    simulateAlert: "அவசர அலாரம் (டெமோ)",
     logout: "வெளியேறு",
     roleAdmin: "ஆணையர்",
     roleTourist: "சுற்றுலா பயணி",
     demoInfo:
-      "Admin: admin@police.gov / 123456. அல்லது சுற்றுலா பயணியாக பதிவு செய்யவும்.",
+      "ஆணையர்: admin@police.gov / 123456. சுற்றுலா பயணி: பதிவு செய்து 123456 பயன்படுத்தவும்.",
     touristInfoPanel: "சுற்றுலா பயணி விவரங்கள்",
     noTourists: "இன்னும் யாரும் பதிவு செய்யவில்லை.",
     shareExplanation:
-      "உங்கள் உலாவி இருப்பிடத்தை பயன்படுத்தி நேரடி கண்காணிப்பு எப்படி இருக்கும் என்பதை இது விளக்குகிறது.",
+      "உங்கள் உலாவி இருப்பிடத்தைப் பயன்படுத்தி நேரடி கண்காணிப்பு மற்றும் பகிர்வு எப்படி இருக்கும் என்பதை இது காட்டுகிறது.",
   },
   hi: {
     appTitle: "SafeTravel AI – रानीपेट कमांड सेंटर",
@@ -96,40 +97,53 @@ const translations = {
     panicAlerts: "पैनिक अलर्ट",
     mapTitle: "लाइव लोकेशन मानचित्र",
     shareLocation: "मेरा लोकेशन साझा करें",
+    shareLinkLabel: "इस लिंक या QR कोड से लोकेशन साझा करें",
     simulateTourist: "नया पर्यटक जोड़ें (डेमो)",
     simulateAlert: "पैनिक अलर्ट (डेमो)",
     logout: "लॉगआउट",
     roleAdmin: "एडमिन",
     roleTourist: "पर्यटक",
     demoInfo:
-      "Admin: admin@police.gov / 123456. या पर्यटक के रूप में रजिस्टर करें.",
+      "एडमिन: admin@police.gov / 123456. पर्यटक: रजिस्टर करें और 123456 उपयोग करें.",
     touristInfoPanel: "पर्यटक विवरण",
     noTourists: "अभी कोई पर्यटक पंजीकृत नहीं हैं.",
     shareExplanation:
-      "यह आपका ब्राउज़र लोकेशन लेकर लाइव ट्रैकिंग कैसे काम करती है, यह दिखाता है.",
+      "आपका ब्राउज़र लोकेशन प्रयोग करके यह दिखाता है कि रियल‑टाइम ट्रैकिंग और लोकेशन शेयरिंग कैसे काम करेगी.",
   },
 };
 
 function App() {
-  // language state
   const [lang, setLang] = useState("en");
   const t = translations[lang];
 
-  // auth state
-  const [user, setUser] = useState(null); // {role: 'admin'|'tourist', name, email}
+  const [user, setUser] = useState(null); // {role, name, email, touristId?}
   const [showRegister, setShowRegister] = useState(false);
 
-  // data
-  const [tourists, setTourists] = useState([]); // stored tourists visible to admin
+  const [tourists, setTourists] = useState([]);
   const [alerts, setAlerts] = useState(0);
 
-  // live location
   const [position, setPosition] = useState(null);
   const [locationPermissionDenied, setLocationPermissionDenied] = useState(
     false
   );
 
-  // watch location when user clicks "Share my location"
+  const [shareUrl, setShareUrl] = useState("");
+
+  const LanguageSwitcher = () => (
+    <div className="flex items-center gap-2 text-xs sm:text-sm">
+      <span className="font-medium text-slate-600">{t.language}:</span>
+      <select
+        value={lang}
+        onChange={(e) => setLang(e.target.value)}
+        className="border border-slate-300 rounded-xl px-2 py-1 bg-white text-xs"
+      >
+        <option value="en">{t.english}</option>
+        <option value="ta">{t.tamil}</option>
+        <option value="hi">{t.hindi}</option>
+      </select>
+    </div>
+  );
+
   const startLocationWatch = () => {
     if (!navigator.geolocation) {
       alert("Geolocation is not supported in this browser.");
@@ -137,11 +151,13 @@ function App() {
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setPosition({
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        });
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setPosition({ lat, lng });
         setLocationPermissionDenied(false);
+
+        const url = `https://www.google.com/maps?q=${lat},${lng}`;
+        setShareUrl(url);
       },
       () => {
         setLocationPermissionDenied(true);
@@ -149,14 +165,12 @@ function App() {
     );
   };
 
-  // simple login logic
   const handleLogin = (email, password) => {
     if (email === "admin@police.gov" && password === "123456") {
       setUser({ role: "admin", email, name: "Ranipet Police Admin" });
       setShowRegister(false);
       return true;
     }
-    // allow tourist login if registered email exists
     const foundTourist = tourists.find((t) => t.email === email);
     if (foundTourist && password === "123456") {
       setUser({
@@ -192,25 +206,8 @@ function App() {
 
   const simulateAlert = () => {
     setAlerts((a) => a + 1);
-    alert("Panic alert triggered (demo). Admin can see counters update.");
+    alert("Panic alert triggered (demo). Admin counters updated.");
   };
-
-  // components:
-
-  const LanguageSwitcher = () => (
-    <div className="flex items-center gap-2 text-sm">
-      <span className="font-semibold text-slate-700">{t.language}:</span>
-      <select
-        value={lang}
-        onChange={(e) => setLang(e.target.value)}
-        className="border border-[#E5DEC5] rounded-2xl px-3 py-1 bg-[#FFFCF5] text-sm"
-      >
-        <option value="en">{t.english}</option>
-        <option value="ta">{t.tamil}</option>
-        <option value="hi">{t.hindi}</option>
-      </select>
-    </div>
-  );
 
   const LoginPage = () => {
     const [form, setForm] = useState({ email: "", password: "" });
@@ -219,33 +216,31 @@ function App() {
     const onSubmit = (e) => {
       e.preventDefault();
       const ok = handleLogin(form.email, form.password);
-      if (!ok) {
-        setError(t.demoInfo);
-      }
+      if (!ok) setError(t.demoInfo);
     };
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FEF9E7] via-white to-slate-50 px-4">
-        <div className="w-full max-w-md bg-white/95 border border-[#E5DEC5] rounded-3xl shadow-2xl p-8 space-y-6">
+      <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6] px-4">
+        <div className="w-full max-w-md bg-white shadow-2xl rounded-3xl border border-slate-200 p-8 space-y-6">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-2xl font-extrabold text-blue-900">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-[#0F172A]">
                 {t.loginTitle}
               </h1>
-              <p className="text-xs text-slate-500 mt-1">{t.subtitle}</p>
+              <p className="text-[11px] text-slate-500 mt-1">{t.subtitle}</p>
             </div>
             <LanguageSwitcher />
           </div>
 
           {error && (
-            <div className="rounded-2xl bg-red-50 border border-red-200 px-3 py-2 text-xs text-red-700">
+            <div className="rounded-2xl bg-red-50 border border-red-200 px-3 py-2 text-[11px] text-red-700">
               {error}
             </div>
           )}
 
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 {t.email}
               </label>
               <input
@@ -255,12 +250,12 @@ function App() {
                   setForm((f) => ({ ...f, email: e.target.value }))
                 }
                 required
-                className="w-full rounded-2xl border border-[#E5DEC5] px-4 py-2 bg-[#FFFCF5] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                 placeholder="admin@police.gov"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 {t.password}
               </label>
               <input
@@ -270,28 +265,28 @@ function App() {
                   setForm((f) => ({ ...f, password: e.target.value }))
                 }
                 required
-                className="w-full rounded-2xl border border-[#E5DEC5] px-4 py-2 bg-[#FFFCF5] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                 placeholder="123456"
               />
             </div>
             <button
               type="submit"
-              className="w-full rounded-2xl bg-gradient-to-r from-blue-800 to-blue-500 text-white font-semibold py-2.5 shadow-md hover:shadow-lg transition"
+              className="w-full rounded-2xl bg-gradient-to-r from-[#1D4ED8] to-[#2563EB] text-white font-semibold py-2.5 text-sm shadow-md hover:shadow-lg transition"
             >
               {t.loginButton}
             </button>
           </form>
 
-          <div className="text-center text-xs text-slate-600">
+          <div className="text-center text-[11px] text-slate-600">
             {t.notRegistered}{" "}
             <button
               onClick={() => setShowRegister(true)}
-              className="font-semibold text-blue-700 hover:underline"
+              className="font-semibold text-[#2563EB] hover:underline"
             >
               {t.registerHere}
             </button>
           </div>
-          <div className="text-[11px] text-slate-500 mt-2">{t.demoInfo}</div>
+          <div className="text-[10px] text-slate-500 mt-1">{t.demoInfo}</div>
         </div>
       </div>
     );
@@ -306,21 +301,21 @@ function App() {
     };
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FEF9E7] via-white to-slate-50 px-4">
-        <div className="w-full max-w-md bg-white/95 border border-[#E5DEC5] rounded-3xl shadow-2xl p-8 space-y-6">
+      <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6] px-4">
+        <div className="w-full max-w-md bg-white shadow-2xl rounded-3xl border border-slate-200 p-8 space-y-6">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-2xl font-extrabold text-blue-900">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-[#0F172A]">
                 {t.registerTitle}
               </h1>
-              <p className="text-xs text-slate-500 mt-1">{t.subtitle}</p>
+              <p className="text-[11px] text-slate-500 mt-1">{t.subtitle}</p>
             </div>
             <LanguageSwitcher />
           </div>
 
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 {t.name}
               </label>
               <input
@@ -330,12 +325,12 @@ function App() {
                   setForm((f) => ({ ...f, name: e.target.value }))
                 }
                 required
-                className="w-full rounded-2xl border border-[#E5DEC5] px-4 py-2 bg-[#FFFCF5] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                 placeholder="Tourist name"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 {t.email}
               </label>
               <input
@@ -345,12 +340,12 @@ function App() {
                   setForm((f) => ({ ...f, email: e.target.value }))
                 }
                 required
-                className="w-full rounded-2xl border border-[#E5DEC5] px-4 py-2 bg-[#FFFCF5] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                 placeholder="tourist@example.com"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 {t.phone}
               </label>
               <input
@@ -360,22 +355,22 @@ function App() {
                   setForm((f) => ({ ...f, phone: e.target.value }))
                 }
                 required
-                className="w-full rounded-2xl border border-[#E5DEC5] px-4 py-2 bg-[#FFFCF5] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                 placeholder="+91 98765 43210"
               />
             </div>
             <button
               type="submit"
-              className="w-full rounded-2xl bg-gradient-to-r from-blue-800 to-blue-500 text-white font-semibold py-2.5 shadow-md hover:shadow-lg transition"
+              className="w-full rounded-2xl bg-gradient-to-r from-[#1D4ED8] to-[#2563EB] text-white font-semibold py-2.5 text-sm shadow-md hover:shadow-lg transition"
             >
               {t.registerTitle}
             </button>
           </form>
 
-          <div className="text-center text-xs text-slate-600">
+          <div className="text-center text-[11px] text-slate-600">
             <button
               onClick={() => setShowRegister(false)}
-              className="font-semibold text-blue-700 hover:underline"
+              className="font-semibold text-[#2563EB] hover:underline"
             >
               {t.backToLogin}
             </button>
@@ -386,7 +381,7 @@ function App() {
   };
 
   const LiveMapCard = () => {
-    const defaultCenter = "13.1167,79.6500"; // Ranipet approx
+    const defaultCenter = "13.1167,79.6500";
     const center = position
       ? `${position.lat},${position.lng}`
       : defaultCenter;
@@ -394,12 +389,12 @@ function App() {
     const mapsUrl = `https://www.google.com/maps?q=${center}&z=14&output=embed`;
 
     return (
-      <div className="rounded-3xl bg-white/95 border border-[#E5DEC5] shadow-xl overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-[#F3EBD5] bg-gradient-to-r from-blue-900 to-blue-700 text-white">
-          <div className="font-semibold text-sm">{t.mapTitle}</div>
+      <div className="rounded-3xl bg-white border border-slate-200 shadow-md overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 py-3 border-b border-slate-200 bg-gradient-to-r from-[#0F172A] to-[#1F2937] text-white gap-2">
+          <div className="text-sm font-semibold">{t.mapTitle}</div>
           <button
             onClick={startLocationWatch}
-            className="text-xs bg-white/10 border border-white/30 rounded-2xl px-3 py-1 hover:bg-white/20"
+            className="text-[11px] px-3 py-1.5 rounded-2xl bg-white/10 border border-white/30 hover:bg-white/20"
           >
             {t.shareLocation}
           </button>
@@ -415,136 +410,150 @@ function App() {
             loading="lazy"
           />
         </div>
-        <div className="px-5 py-3 text-[11px] text-slate-500">
-          {locationPermissionDenied
-            ? "Location access denied in browser – map shows district center."
-            : t.shareExplanation}
+        <div className="px-4 py-3 border-t border-slate-200 space-y-1">
+          <p className="text-[11px] text-slate-600">{t.shareExplanation}</p>
+          {shareUrl && (
+            <div className="mt-1">
+              <div className="text-[11px] font-semibold text-slate-700 mb-1">
+                {t.shareLinkLabel}
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <input
+                  className="flex-1 text-[11px] border border-slate-300 rounded-xl px-2 py-1 bg-slate-50"
+                  value={shareUrl}
+                  readOnly
+                />
+                {/* QR code placeholder – you can explain this in expo */}
+                <div className="w-16 h-16 border border-slate-300 rounded-xl flex items-center justify-center text-[10px] text-slate-500">
+                  QR
+                </div>
+              </div>
+            </div>
+          )}
+          {locationPermissionDenied && (
+            <p className="text-[10px] text-red-600 mt-1">
+              Location access denied in browser – map shows district center.
+            </p>
+          )}
         </div>
       </div>
     );
   };
 
-  const AdminDashboard = () => {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#FEF9E7] via-white to-slate-50">
-        {/* top bar */}
-        <div className="sticky top-0 z-20 bg-white/95 border-b border-[#E5DEC5] backdrop-blur-md">
-          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-900 to-blue-600 text-white flex items-center justify-center shadow-lg">
-                🛡️
+  const AdminDashboard = () => (
+    <div className="min-h-screen bg-[#F3F4F6]">
+      <header className="sticky top-0 z-20 bg-white/95 border-b border-slate-200 backdrop-blur-md">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0F172A] to-[#2563EB] text-white flex items-center justify-center shadow-lg">
+              🛡️
+            </div>
+            <div>
+              <div className="text-sm sm:text-base font-extrabold text-[#0F172A]">
+                {t.appTitle}
               </div>
-              <div>
-                <div className="text-sm font-extrabold text-slate-900">
-                  {t.appTitle}
-                </div>
-                <div className="text-[11px] text-slate-500">
-                  {t.roleAdmin} – {user?.email}
-                </div>
+              <div className="text-[11px] text-slate-500">
+                {t.roleAdmin} – {user?.email}
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <LanguageSwitcher />
-              <button
-                onClick={handleLogout}
-                className="text-xs font-semibold px-3 py-1.5 rounded-2xl border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
-              >
-                {t.logout}
-              </button>
-            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
+            <button
+              onClick={handleLogout}
+              className="text-[11px] font-semibold px-3 py-1.5 rounded-2xl border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
+            >
+              {t.logout}
+            </button>
           </div>
         </div>
+      </header>
 
-        {/* content */}
-        <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="rounded-3xl bg-white/95 border border-[#E5DEC5] shadow-md p-4">
-              <div className="text-xs font-semibold text-slate-500 mb-1">
-                {t.activeTourists}
-              </div>
-              <div className="text-3xl font-extrabold text-blue-900">
-                {tourists.length}
-              </div>
-              <div className="text-[11px] text-slate-500 mt-1">
-                Real‑time count of tourists registered in this session.
-              </div>
+      <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+        <section className="grid md:grid-cols-3 gap-4">
+          <div className="rounded-3xl bg-white border border-slate-200 shadow-md p-4">
+            <div className="text-xs font-semibold text-slate-500 mb-1">
+              {t.activeTourists}
             </div>
-            <div className="rounded-3xl bg-white/95 border border-[#E5DEC5] shadow-md p-4">
-              <div className="text-xs font-semibold text-slate-500 mb-1">
-                {t.panicAlerts}
-              </div>
-              <div className="text-3xl font-extrabold text-red-700">
-                {alerts}
-              </div>
-              <button
-                onClick={simulateAlert}
-                className="mt-3 text-xs px-3 py-1.5 rounded-2xl bg-red-600 text-white font-semibold shadow hover:bg-red-700"
-              >
-                {t.simulateAlert}
-              </button>
+            <div className="text-3xl font-extrabold text-[#1D4ED8]">
+              {tourists.length}
             </div>
-            <div className="rounded-3xl bg-white/95 border border-[#E5DEC5] shadow-md p-4">
-              <div className="text-xs font-semibold text-slate-500 mb-1">
-                {t.touristInfoPanel}
-              </div>
-              <div className="text-[11px] text-slate-600">
-                Admin can see all tourist registrations below, including ID,
-                name, email and phone. This demonstrates how a real command
-                center would track visitors.
-              </div>
+            <div className="text-[11px] text-slate-500 mt-1">
+              Shows tourists registered during this expo session.
             </div>
           </div>
-
-          <LiveMapCard />
-
-          <div className="rounded-3xl bg-white/95 border border-[#E5DEC5] shadow-md p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-sm font-bold text-slate-800">
-                {t.activeTourists}
-              </div>
+          <div className="rounded-3xl bg-white border border-slate-200 shadow-md p-4">
+            <div className="text-xs font-semibold text-slate-500 mb-1">
+              {t.panicAlerts}
             </div>
-            {tourists.length === 0 ? (
-              <div className="text-xs text-slate-500 py-4">
-                {t.noTourists}
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs">
-                  <thead>
-                    <tr className="text-left text-[11px] text-slate-500 border-b border-[#F3EBD5]">
-                      <th className="py-2 pr-2">ID</th>
-                      <th className="py-2 pr-2">{t.name}</th>
-                      <th className="py-2 pr-2">{t.email}</th>
-                      <th className="py-2 pr-2">{t.phone}</th>
-                      <th className="py-2">Registered</th>
+            <div className="text-3xl font-extrabold text-[#B91C1C]">
+              {alerts}
+            </div>
+            <button
+              onClick={simulateAlert}
+              className="mt-3 text-[11px] px-3 py-1.5 rounded-2xl bg-[#DC2626] text-white font-semibold shadow hover:bg-[#B91C1C]"
+            >
+              {t.simulateAlert}
+            </button>
+          </div>
+          <div className="rounded-3xl bg-white border border-slate-200 shadow-md p-4">
+            <div className="text-xs font-semibold text-slate-500 mb-1">
+              {t.touristInfoPanel}
+            </div>
+            <div className="text-[11px] text-slate-600">
+              Admin can view all tourist registrations below (ID, name, email,
+              phone and time). This mirrors a real police command center.
+            </div>
+          </div>
+        </section>
+
+        <LiveMapCard />
+
+        <section className="rounded-3xl bg-white border border-slate-200 shadow-md p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-sm font-semibold text-slate-800">
+              {t.activeTourists}
+            </div>
+          </div>
+          {tourists.length === 0 ? (
+            <div className="text-xs text-slate-500 py-4">{t.noTourists}</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="text-left text-[11px] text-slate-500 border-b border-slate-200">
+                    <th className="py-2 pr-2">ID</th>
+                    <th className="py-2 pr-2">{t.name}</th>
+                    <th className="py-2 pr-2">{t.email}</th>
+                    <th className="py-2 pr-2">{t.phone}</th>
+                    <th className="py-2">Registered</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tourists.map((tr) => (
+                    <tr
+                      key={tr.id}
+                      className="border-b border-slate-100 last:border-0"
+                    >
+                      <td className="py-2 pr-2 font-mono text-[11px]">
+                        {tr.id}
+                      </td>
+                      <td className="py-2 pr-2">{tr.name}</td>
+                      <td className="py-2 pr-2">{tr.email}</td>
+                      <td className="py-2 pr-2">{tr.phone}</td>
+                      <td className="py-2 text-[11px] text-slate-500">
+                        {tr.registeredAt}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {tourists.map((tr) => (
-                      <tr
-                        key={tr.id}
-                        className="border-b border-[#F9F2DF] last:border-0"
-                      >
-                        <td className="py-2 pr-2 font-mono text-[11px]">
-                          {tr.id}
-                        </td>
-                        <td className="py-2 pr-2">{tr.name}</td>
-                        <td className="py-2 pr-2">{tr.email}</td>
-                        <td className="py-2 pr-2">{tr.phone}</td>
-                        <td className="py-2 text-[11px] text-slate-500">
-                          {tr.registeredAt}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
+  );
 
   const TouristDashboard = () => {
     const myRecord =
@@ -553,15 +562,15 @@ function App() {
         : null;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#FEF9E7] via-white to-slate-50">
-        <div className="sticky top-0 z-20 bg-white/95 border-b border-[#E5DEC5] backdrop-blur-md">
-          <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="min-h-screen bg-[#F3F4F6]">
+        <header className="sticky top-0 z-20 bg-white/95 border-b border-slate-200 backdrop-blur-md">
+          <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-900 to-blue-600 text-white flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0F172A] to-[#2563EB] text-white flex items-center justify-center shadow-lg">
                 🧳
               </div>
               <div>
-                <div className="text-sm font-extrabold text-slate-900">
+                <div className="text-sm sm:text-base font-extrabold text-[#0F172A]">
                   {t.touristDashboard}
                 </div>
                 <div className="text-[11px] text-slate-500">
@@ -573,19 +582,19 @@ function App() {
               <LanguageSwitcher />
               <button
                 onClick={handleLogout}
-                className="text-xs font-semibold px-3 py-1.5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+                className="text-[11px] font-semibold px-3 py-1.5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
               >
                 {t.logout}
               </button>
             </div>
           </div>
-        </div>
+        </header>
 
-        <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+        <main className="max-w-4xl mx-auto px-4 py-6 space-y-6">
           <LiveMapCard />
 
-          <div className="rounded-3xl bg-white/95 border border-[#E5DEC5] shadow-md p-4 space-y-3">
-            <div className="text-sm font-bold text-slate-800">
+          <section className="rounded-3xl bg-white border border-slate-200 shadow-md p-4 space-y-3">
+            <div className="text-sm font-semibold text-slate-800">
               {t.touristInfoPanel}
             </div>
             {myRecord ? (
@@ -611,17 +620,16 @@ function App() {
             )}
             <button
               onClick={simulateAlert}
-              className="mt-3 text-xs px-3 py-1.5 rounded-2xl bg-red-600 text-white font-semibold shadow hover:bg-red-700"
+              className="mt-3 text-[11px] px-3 py-1.5 rounded-2xl bg-[#DC2626] text-white font-semibold shadow hover:bg-[#B91C1C]"
             >
               {t.simulateAlert}
             </button>
-          </div>
-        </div>
+          </section>
+        </main>
       </div>
     );
   };
 
-  // main render switch
   if (!user) {
     if (showRegister) return <RegisterPage />;
     return <LoginPage />;
