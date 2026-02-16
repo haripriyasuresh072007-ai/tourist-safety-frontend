@@ -1,147 +1,217 @@
 import { useState } from 'react';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import LiveSafetyMap from './components/LiveSafetyMap';
 import Navbar from './components/Navbar';
-import LoginPage from './components/LoginPage';
 
-function DashboardContent() {
-  const { user, logout, tourists, setTourists, alerts, setAlerts } = useAuth();
+function App() {
+  const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [tourists, setTourists] = useState([]);
+  const [alerts, setAlerts] = useState([]);
+  const [count, setCount] = useState(0);
+
+  const login = () => {
+    setUser({ role: 'admin', name: 'Police Command' });
+  };
+
+  const logout = () => {
+    setUser(null);
+  };
 
   const addTourist = () => {
     const newTourist = {
       id: Date.now(),
       name: `Tourist #${tourists.length + 1}`,
-      email: `tourist${tourists.length + 1}@demo.com`,
-      location: { lat: 13.9167 + (Math.random() - 0.5) * 0.02, lng: 78.4867 + (Math.random() - 0.5) * 0.02 },
-      safetyScore: 70 + Math.random() * 30,
       digitalID: `TRV${Date.now().toString().slice(-6)}`,
-      status: 'active',
-      timestamp: new Date().toISOString()
+      safetyScore: 85,
+      location: { lat: 13.9167, lng: 78.4867 }
     };
     setTourists(prev => [...prev, newTourist]);
   };
 
-  const triggerPanic = () => {
+  const triggerAlert = () => {
     const newAlert = {
       id: Date.now(),
-      touristId: tourists[0]?.id || 'demo',
-      location: { lat: 13.92, lng: 78.48 },
       efirId: `EFIR${Date.now().toString().slice(-6)}`,
-      status: 'pending',
       priority: 'high',
-      timestamp: new Date().toISOString()
+      nearestPolice: 'Ranipet PS'
     };
-    setAlerts(prev => [newAlert, ...prev.slice(0, 9)]);
+    setAlerts(prev => [newAlert, ...prev]);
   };
 
-  if (!user) return <LoginPage />;
+  if (!user) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        background: 'linear-gradient(135deg, #FEF9E7 0%, #F8FAFC 100%)',
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        padding: '40px',
+        textAlign: 'center'
+      }}>
+        <div style={{ 
+          maxWidth: '500px', 
+          background: 'rgba(255,255,255,0.95)', 
+          borderRadius: '24px', 
+          padding: '60px 40px', 
+          boxShadow: '0 25px 50px rgba(0,0,0,0.1)',
+          backdropFilter: 'blur(20px)'
+        }}>
+          <div style={{ 
+            width: '100px', height: '100px', 
+            background: 'linear-gradient(135deg, #1E3A8A, #3B82F6)', 
+            borderRadius: '24px', 
+            margin: '0 auto 30px', 
+            display: 'flex', alignItems: 'center', justifyContent: 'center' 
+          }}>
+            <div style={{ fontSize: '48px' }}>🛡️</div>
+          </div>
+          <h1 style={{ fontSize: '48px', fontWeight: '900', color: '#1E3A8A', margin: '0 0 20px' }}>
+            SafeTravel AI
+          </h1>
+          <p style={{ fontSize: '20px', color: '#666', marginBottom: '40px' }}>
+            Ranipet District Police Command Center - Science Day 2026
+          </p>
+          <button
+            onClick={login}
+            style={{
+              padding: '20px 60px',
+              fontSize: '20px',
+              fontWeight: 'bold',
+              background: 'linear-gradient(135deg, #1E3A8A, #3B82F6)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '20px',
+              cursor: 'pointer',
+              boxShadow: '0 15px 35px rgba(30,58,138,0.4)',
+              transition: 'all 0.3s'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'scale(1.05)';
+              e.target.style.boxShadow = '0 20px 45px rgba(30,58,138,0.5)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'scale(1)';
+              e.target.style.boxShadow = '0 15px 35px rgba(30,58,138,0.4)';
+            }}
+          >
+            👮‍♂️ Enter Police Dashboard
+          </button>
+          <div style={{ marginTop: '30px', fontSize: '16px', color: '#D2B48C' }}>
+            Demo Credentials: admin@police.gov / 123456
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #FEF9E7 0%, #F8FAFC 100%)' }}>
       {/* Topbar */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-              </svg>
+      <div style={{ 
+        background: 'rgba(255,255,255,0.95)', 
+        backdropFilter: 'blur(20px)', 
+        borderBottom: '1px solid #F5F5DC', 
+        position: 'sticky', top: 0, zIndex: 50,
+        padding: '20px 40px'
+      }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div style={{ 
+              width: '60px', height: '60px', 
+              background: 'linear-gradient(135deg, #1E3A8A, #3B82F6)', 
+              borderRadius: '16px', 
+              display: 'flex', alignItems: 'center', justifyContent: 'center' 
+            }}>
+              <div style={{ fontSize: '32px', color: 'white' }}>🛡️</div>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">SafeTravel Command</h1>
-              <p className="text-sm text-gray-500">{user.role.toUpperCase()} DASHBOARD</p>
+              <h1 style={{ fontSize: '32px', fontWeight: '900', color: '#1E3A8A', margin: 0 }}>
+                SafeTravel Command
+              </h1>
+              <p style={{ margin: 0, color: '#666', fontSize: '16px' }}>{user.role.toUpperCase()} DASHBOARD</p>
             </div>
           </div>
-          <button onClick={logout} className="px-4 py-2 bg-red-100 text-red-700 rounded-xl hover:bg-red-200 font-medium transition-all">
+          <button 
+            onClick={logout}
+            style={{
+              padding: '12px 24px',
+              background: '#fee2e2',
+              color: '#dc2626',
+              border: 'none',
+              borderRadius: '12px',
+              fontWeight: 'bold',
+              cursor: 'pointer'
+            }}
+          >
             Logout
           </button>
         </div>
       </div>
 
+      {/* Navbar */}
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-      
-      <main className="max-w-7xl mx-auto px-6 py-12">
+
+      {/* Main Content */}
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
         {activeTab === 'overview' && (
-          <div className="grid lg:grid-cols-4 gap-8 mb-12">
-            <div className="lg:col-span-3">
-              <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-6 text-white">
-                  <h2 className="text-2xl font-bold">Live Safety Map - Ranipet District</h2>
-                </div>
-                <div className="p-1">
-                  <LiveSafetyMap tourists={tourists} alerts={alerts} />
+          <div>
+            <h2 style={{ fontSize: '36px', fontWeight: '900', color: '#1E3A8A', marginBottom: '30px' }}>
+              Command Center Overview
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px', marginBottom: '40px' }}>
+              <div style={{ 
+                height: '500px', 
+                background: 'rgba(255,255,255,0.8)', 
+                borderRadius: '24px', 
+                padding: '30px',
+                border: '3px solid #F5F5DC'
+              }}>
+                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1E3A8A', marginBottom: '20px' }}>
+                  🗺️ Live Safety Map - Ranipet District
+                </h3>
+                <div style={{ height: '400px', background: '#E5E7EB', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}>
+                  Interactive Map Coming Soon...
                 </div>
               </div>
-            </div>
-            <div className="space-y-6">
-              <div className="bg-white rounded-3xl p-8 shadow-xl border text-center group hover:shadow-2xl transition-all">
-                <div className="w-20 h-20 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-12 h-12 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ 
+                  padding: '40px', 
+                  background: 'rgba(255,255,255,0.8)', 
+                  borderRadius: '24px', 
+                  textAlign: 'center',
+                  border: '2px solid #F5F5DC'
+                }}>
+                  <div style={{ fontSize: '64px', marginBottom: '20px' }}>🚨</div>
+                  <div style={{ fontSize: '48px', fontWeight: '900', color: '#dc2626' }}>{alerts.length}</div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#1E3A8A' }}>Active Alerts</div>
                 </div>
-                <div className="text-4xl font-black text-gray-900 mb-2">{alerts.length}</div>
-                <div className="text-xl font-semibold text-gray-700 mb-1">Active Incidents</div>
-              </div>
-              <div className="bg-white rounded-3xl p-8 shadow-xl border text-center group hover:shadow-2xl transition-all">
-                <div className="w-20 h-20 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-12 h-12 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                  </svg>
+                <div style={{ 
+                  padding: '40px', 
+                  background: 'rgba(255,255,255,0.8)', 
+                  borderRadius: '24px', 
+                  textAlign: 'center',
+                  border: '2px solid #F5F5DC'
+                }}>
+                  <div style={{ fontSize: '64px', marginBottom: '20px' }}>🧳</div>
+                  <div style={{ fontSize: '48px', fontWeight: '900', color: '#059669' }}>{tourists.length}</div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#1E3A8A' }}>Tourists Tracked</div>
                 </div>
-                <div className="text-4xl font-black text-gray-900 mb-2">{tourists.length}</div>
-                <div className="text-xl font-semibold text-gray-700 mb-1">Tourists Tracked</div>
               </div>
             </div>
           </div>
         )}
 
         {activeTab === 'tourists' && (
-          <div className="space-y-8">
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-              <h2 className="text-4xl font-black text-gray-900">Active Tourists ({tourists.length})</h2>
-              <div className="flex gap-4">
-                <button onClick={addTourist} className="px-8 py-4 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 shadow-xl hover:shadow-2xl transition-all text-lg">
-                  ➕ Register Tourist
-                </button>
-                <button onClick={triggerPanic} className="px-8 py-4 bg-red-600 text-white font-bold rounded-2xl hover:bg-red-700 shadow-xl hover:shadow-2xl transition-all text-lg animate-pulse">
-                  🚨 Emergency Alert
-                </button>
-              </div>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {tourists.slice(0, 9).map((tourist) => (
-                <div key={tourist.id} className="group bg-white rounded-3xl p-8 shadow-xl border border-gray-200 hover:shadow-2xl hover:-translate-y-2 transition-all">
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-lg mb-4 ${
-                    tourist.safetyScore > 80 ? 'bg-emerald-500 text-white' : 'bg-orange-500 text-white'
-                  }`}>
-                    {Math.round(tourist.safetyScore)}%
-                  </div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-3">{tourist.name}</h3>
-                  <p className="text-sm text-gray-600 mb-4">ID: {tourist.digitalID}</p>
-                  <div className="flex items-center gap-2 text-green-600 font-semibold">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    Active & Tracked
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </main>
-    </div>
-  );
-}
-
-function App() {
-  return (
-    <AuthProvider>
-      <DashboardContent />
-    </AuthProvider>
-  );
-}
-
-export default App;
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', flexWrap: 'wrap', gap: '20px' }}>
+              <h2 style={{ fontSize: '36px', fontWeight: '900', color: '#1E3A8A' }}>
+                Active Tourists ({tourists.length})
+              </h2>
+              <div style={{ display: 'flex', gap: '20px' }}>
+                <button 
+                  onClick={addTourist}
+                  style={{
+                    padding: '20px 40px',
+                    background: 'linear-gradient(135deg, #1E3A8A, #3B82F6)',
+                    color: 'white',
+                    border:

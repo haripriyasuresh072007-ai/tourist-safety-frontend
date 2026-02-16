@@ -1,131 +1,108 @@
 import { useState } from 'react';
-import { UserPlus, Mail, Lock, Phone, MapPin } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import LoginPage from './LoginPage';
+import { UserPlus, Mail, Lock, Phone } from 'lucide-react';
 
 export default function RegisterPage({ onSwitchToLogin }) {
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', password: '', role: 'tourist'
   });
-  const [error, setError] = useState('');
-  const { register } = useAuth();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (register(formData)) {
-      alert('✅ Registration successful! Please login.');
-      onSwitchToLogin();
+    if (formData.password.length < 6) {
+      alert('Password must be 6+ characters');
+      return;
     }
+    alert(`✅ Registered: ${formData.name}`);
+    if (onSwitchToLogin) onSwitchToLogin();
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-beige-100 via-white to-beige-50 flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full glass rounded-3xl shadow-2xl overflow-hidden">
-        <div className="p-10 text-center bg-gradient-to-r from-blue-900 to-blue-700 text-white">
-          <div className="w-24 h-24 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-8">
-            <UserPlus className="w-12 h-12" />
+    <div style={{ 
+      minHeight: '100vh', 
+      background: 'linear-gradient(135deg, #FEF9E7 0%, #F8FAFC 100%)',
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      padding: '20px'
+    }}>
+      <div style={{ 
+        maxWidth: '400px', 
+        width: '100%', 
+        background: 'rgba(255,255,255,0.95)', 
+        borderRadius: '24px', 
+        padding: '40px', 
+        boxShadow: '0 25px 50px rgba(0,0,0,0.1)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255,255,255,0.3)'
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '40px', padding: '30px', background: 'linear-gradient(135deg, #1E3A8A, #3B82F6)', borderRadius: '20px', color: 'white' }}>
+          <div style={{ width: '80px', height: '80px', background: 'rgba(255,255,255,0.2)', borderRadius: '20px', margin: '0 auto 20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <UserPlus size={40} />
           </div>
-          <h1 className="text-4xl font-black mb-3">Join SafeTravel</h1>
-          <p className="opacity-90">Create your safety account</p>
+          <h1 style={{ fontSize: '32px', fontWeight: '900', margin: '0 0 10px' }}>Join SafeTravel</h1>
+          <p style={{ opacity: 0.9, margin: 0 }}>Create your safety account</p>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-10 space-y-6">
-          {error && (
-            <div className="p-4 bg-red-50 border-2 border-red-200 rounded-2xl text-red-800 text-sm animate-pulse">
-              {error}
-            </div>
-          )}
-          
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
-            <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-              <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
-              </svg>
-              Full Name
-            </label>
+            <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px', color: '#1E3A8A' }}>Full Name</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({...formData, name: e.target.value})}
-              className="w-full px-5 py-4 bg-white/70 border-2 border-beige-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-lg"
+              style={{
+                width: '100%', padding: '16px', border: '2px solid #F5F5DC', 
+                borderRadius: '16px', fontSize: '16px',
+                transition: 'all 0.3s'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#3B82F6'}
+              onBlur={(e) => e.target.style.borderColor = '#F5F5DC'}
               placeholder="John Doe"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-              <Mail className="w-5 h-5 text-blue-600" />
-              Email
-            </label>
+            <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px', color: '#1E3A8A' }}>Email</label>
             <input
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className="w-full px-5 py-4 bg-white/70 border-2 border-beige-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-lg"
+              style={{
+                width: '100%', padding: '16px', border: '2px solid #F5F5DC', 
+                borderRadius: '16px', fontSize: '16px'
+              }}
               placeholder="john@example.com"
               required
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
-              <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                <Phone className="w-5 h-5 text-blue-600" />
-                Phone
-              </label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                className="w-full px-5 py-4 bg-white/70 border-2 border-beige-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                placeholder="+91 98765 43210"
-                required
-              />
+              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px', color: '#1E3A8A' }}>Phone</label>
+              <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} style={{ width: '100%', padding: '16px', border: '2px solid #F5F5DC', borderRadius: '16px' }} placeholder="+91 98765 43210" />
             </div>
             <div>
-              <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                <Lock className="w-5 h-5 text-blue-600" />
-                Password
-              </label>
-              <input
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
-                className="w-full px-5 py-4 bg-white/70 border-2 border-beige-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                placeholder="••••••••"
-                minLength="6"
-                required
-              />
+              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px', color: '#1E3A8A' }}>Password</label>
+              <input type="password" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} style={{ width: '100%', padding: '16px', border: '2px solid #F5F5DC', borderRadius: '16px' }} placeholder="••••••••" minLength="6" required />
             </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-bold text-gray-800 mb-3">Account Type</label>
-            <select
-              value={formData.role}
-              onChange={(e) => setFormData({...formData, role: e.target.value})}
-              className="w-full px-5 py-4 bg-white/70 border-2 border-beige-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-lg"
-            >
-              <option value="tourist">🧳 Tourist</option>
-              <option value="police">👮‍♂️ Police Officer</option>
-            </select>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-700 to-blue-500 text-white py-5 px-8 rounded-2xl font-black text-xl shadow-2xl hover:shadow-3xl hover:scale-[1.02] transition-all duration-300 border-2 border-blue-500/50"
+            style={{
+              width: '100%', padding: '20px', background: 'linear-gradient(135deg, #1E3A8A, #3B82F6)',
+              color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px',
+              fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 10px 30px rgba(30,58,138,0.4)'
+            }}
           >
             Create Account
           </button>
 
-          <div className="text-center pt-6">
-            <p className="text-sm text-gray-600">
-              Already have an account? 
-              <button 
-                onClick={onSwitchToLogin}
-                className="font-bold text-blue-700 hover:text-blue-900 ml-1 transition-colors"
-              >
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ margin: 0, color: '#666' }}>
+              Already registered? 
+              <button type="button" onClick={onSwitchToLogin} style={{ color: '#1E3A8A', fontWeight: 'bold', background: 'none', border: 'none', cursor: 'pointer' }}>
                 Sign In
               </button>
             </p>
