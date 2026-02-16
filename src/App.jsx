@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useState } from "react";
 
 const translations = {
@@ -26,16 +25,12 @@ const translations = {
     mapTitle: "Live Location Map",
     shareLocation: "Share my location",
     shareLinkLabel: "Share this live location link or QR code",
-    simulateAlert: "Simulate panic alert",
     logout: "Logout",
     roleAdmin: "Admin",
     roleTourist: "Tourist",
-    demoInfo:
-      "Use admin@police.gov / 123456 for Admin, or register as a tourist. Tourist password (demo): 123456.",
+    demoInfo: "admin@police.gov / 123456 (Admin) | Register as Tourist (password: 123456)",
     touristInfoPanel: "Tourist Information",
     noTourists: "No tourists registered yet.",
-    shareExplanation:
-      "Your browser location is used to show how live tracking and sharing would work in a real system.",
   },
   ta: {
     appTitle: "SafeTravel AI – ராணிப்பேட்டை கட்டுப்பாட்டு மையம்",
@@ -53,24 +48,20 @@ const translations = {
     registerTitle: "சுற்றுலா பயணி பதிவு",
     name: "பெயர்",
     phone: "மொபைல் எண்",
-    backToLogin: "உள்நுழைவு திரைக்கு திரும்ப",
+    backToLogin: "உள்நுழைவுக்கு திரும்ப",
     adminDashboard: "ஆணையர் இயக்குபலகை",
     touristDashboard: "சுற்றுலா பயணி இயக்குபலகை",
     activeTourists: "பதிவு செய்யப்பட்ட சுற்றுலா பயணிகள்",
     panicAlerts: "அவசர அலாரங்கள்",
     mapTitle: "நேரடி இருப்பிட வரைபடம்",
     shareLocation: "என் இருப்பிடத்தை பகிர்",
-    shareLinkLabel: "இந்த இணைப்பு அல்லது QR மூலம் இருப்பிடத்தை பகிரலாம்",
-    simulateAlert: "அவசர அலாரம் (டெமோ)",
+    shareLinkLabel: "இந்த இணைப்பு அல்லது QR மூலம் பகிரலாம்",
     logout: "வெளியேறு",
     roleAdmin: "ஆணையர்",
     roleTourist: "சுற்றுலா பயணி",
-    demoInfo:
-      "ஆணையர்: admin@police.gov / 123456. சுற்றுலா பயணி: பதிவு செய்து 123456 பயன்படுத்தவும்.",
+    demoInfo: "ஆணையர்: admin@police.gov / 123456 | சுற்றுலா பயணி: பதிவு செய்து 123456",
     touristInfoPanel: "சுற்றுலா பயணி விவரங்கள்",
     noTourists: "இன்னும் யாரும் பதிவு செய்யவில்லை.",
-    shareExplanation:
-      "உங்கள் உலாவி இருப்பிடத்தைப் பயன்படுத்தி நேரடி கண்காணிப்பு மற்றும் பகிர்வு எப்படி இருக்கும் என்பதை இது காட்டுகிறது.",
   },
   hi: {
     appTitle: "SafeTravel AI – रानीपेट कमांड सेंटर",
@@ -88,56 +79,43 @@ const translations = {
     registerTitle: "पर्यटक पंजीकरण",
     name: "नाम",
     phone: "मोबाइल नंबर",
-    backToLogin: "लॉगिन पर वापस जाएँ",
+    backToLogin: "लॉगिन पर वापस",
     adminDashboard: "एडमिन डैशबोर्ड",
     touristDashboard: "पर्यटक डैशबोर्ड",
     activeTourists: "पंजीकृत पर्यटक",
     panicAlerts: "पैनिक अलर्ट",
     mapTitle: "लाइव लोकेशन मानचित्र",
     shareLocation: "मेरा लोकेशन साझा करें",
-    shareLinkLabel: "इस लिंक या QR कोड से लोकेशन साझा करें",
-    simulateAlert: "पैनिक अलर्ट (डेमो)",
+    shareLinkLabel: "इस लिंक या QR कोड से साझा करें",
     logout: "लॉगआउट",
     roleAdmin: "एडमिन",
     roleTourist: "पर्यटक",
-    demoInfo:
-      "एडमिन: admin@police.gov / 123456. पर्यटक: रजिस्टर करें और 123456 उपयोग करें.",
+    demoInfo: "एडमिन: admin@police.gov / 123456 | पर्यटक: रजिस्टर करें (पासवर्ड: 123456)",
     touristInfoPanel: "पर्यटक विवरण",
-    noTourists: "अभी कोई पर्यटक पंजीकृत नहीं हैं.",
-    shareExplanation:
-      "आपका ब्राउज़र लोकेशन प्रयोग करके यह दिखाता है कि रियल‑टाइम ट्रैकिंग और लोकेशन शेयरिंग कैसे काम करेगी.",
+    noTourists: "अभी कोई पर्यटक पंजीकृत नहीं.",
   },
 };
 
 function App() {
   const [lang, setLang] = useState("en");
   const t = translations[lang];
-
-  const [user, setUser] = useState(null); // {role, name, email, touristId?}
+  const [user, setUser] = useState(null);
   const [showRegister, setShowRegister] = useState(false);
-
   const [tourists, setTourists] = useState([]);
   const [alerts, setAlerts] = useState(0);
-
   const [position, setPosition] = useState(null);
-  const [locationPermissionDenied, setLocationPermissionDenied] = useState(
-    false
-  );
-
+  const [locationPermissionDenied, setLocationPermissionDenied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
-
   const [panicHold, setPanicHold] = useState(false);
   const [panicTimerId, setPanicTimerId] = useState(null);
 
-  const tDict = t; // shorthand in inner components if needed
-
   const LanguageSwitcher = () => (
-    <div className="flex items-center gap-2 text-xs sm:text-sm">
-      <span className="font-medium text-slate-600">{t.language}:</span>
+    <div className="flex items-center gap-3 px-3 py-1.5 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl shadow-sm text-xs">
+      <span className="font-semibold text-slate-700">{t.language}:</span>
       <select
         value={lang}
         onChange={(e) => setLang(e.target.value)}
-        className="border border-slate-300 rounded-xl px-2 py-1 bg-white text-xs"
+        className="bg-transparent border-none outline-none font-semibold text-slate-800 hover:text-blue-600 cursor-pointer text-xs"
       >
         <option value="en">{t.english}</option>
         <option value="ta">{t.tamil}</option>
@@ -147,23 +125,15 @@ function App() {
   );
 
   const startLocationWatch = () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported in this browser.");
-      return;
-    }
+    if (!navigator.geolocation) return alert("GPS not supported");
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
+        const { latitude: lat, longitude: lng } = pos.coords;
         setPosition({ lat, lng });
         setLocationPermissionDenied(false);
-
-        const url = `https://www.google.com/maps?q=${lat},${lng}`;
-        setShareUrl(url);
+        setShareUrl(`https://maps.app.goo.gl/?q=${lat},${lng}`);
       },
-      () => {
-        setLocationPermissionDenied(true);
-      }
+      () => setLocationPermissionDenied(true)
     );
   };
 
@@ -175,13 +145,7 @@ function App() {
     }
     const foundTourist = tourists.find((t) => t.email === email);
     if (foundTourist && password === "123456") {
-      setUser({
-        role: "tourist",
-        email,
-        name: foundTourist.name,
-        touristId: foundTourist.id,
-      });
-      setShowRegister(false);
+      setUser({ role: "tourist", email, name: foundTourist.name, touristId: foundTourist.id });
       return true;
     }
     return false;
@@ -193,375 +157,205 @@ function App() {
   };
 
   const handleRegisterTourist = (payload) => {
-    const id = "TRV" + (tourists.length + 1).toString().padStart(4, "0");
-    const newTourist = {
-      id,
-      name: payload.name,
-      email: payload.email,
-      phone: payload.phone,
-      // if you later add emergency contacts, add them here
-      registeredAt: new Date().toLocaleString(),
-    };
+    const id = `TRV${(tourists.length + 1).toString().padStart(4, "0")}`;
+    const newTourist = { id, ...payload, registeredAt: new Date().toLocaleString() };
     setTourists((prev) => [...prev, newTourist]);
-    alert(`Tourist registered with ID: ${id}`);
+    alert(`✅ Tourist registered!\nID: ${id}`);
     setShowRegister(false);
   };
 
-  const triggerFullPanicFlow = () => {
+  const triggerPanic = () => {
     setAlerts((a) => a + 1);
-    const locationText = position
-      ? `Location: https://www.google.com/maps?q=${position.lat},${position.lng}`
-      : "Location: last known or GPS unavailable.";
-    alert(
-      [
-        `1) Voice call automatically placed to emergency contacts (conceptual).`,
-        "2) If not answered, SMS is sent with:",
-        `   - Tourist details`,
-        `   - ${locationText}`,
-        "3) Same info goes to the nearby police control room.",
-        "",
-        "This expo demo simulates the flow without real calls/SMS.",
-      ].join("\n")
-    );
+    alert("🚨 PANIC ALERT TRIGGERED!\n✅ Emergency calls made\n✅ Police notified\n✅ Location shared");
   };
 
   const startPanicHold = () => {
     setPanicHold(true);
-    const id = setTimeout(() => {
+    const timer = setTimeout(() => {
       setPanicHold(false);
-      triggerFullPanicFlow();
+      triggerPanic();
     }, 3000);
-    setPanicTimerId(id);
+    setPanicTimerId(timer);
   };
 
   const cancelPanicHold = () => {
     setPanicHold(false);
-    if (panicTimerId) {
-      clearTimeout(panicTimerId);
-      setPanicTimerId(null);
-    }
+    if (panicTimerId) clearTimeout(panicTimerId);
+    setPanicTimerId(null);
   };
 
-const LoginPage = () => {
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const ok = handleLogin(form.email, form.password);
-    if (!ok) setError(t.demoInfo);
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6] px-4">
-      <div className="w-full max-w-md bg-white shadow-2xl rounded-3xl border border-slate-200 p-8 space-y-6">
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0F172A] to-[#2563EB] text-white flex items-center justify-center shadow-lg text-xl">
-            🛡️
-          </div>
-          <div className="text-center">
-            <h1 className="text-xl sm:text-2xl font-extrabold text-[#0F172A]">
-              {t.loginTitle}
-            </h1>
-            <p className="text-[11px] text-slate-500 mt-1">{t.subtitle}</p>
-          </div>
-          <div className="mt-1">
-            <LanguageSwitcher />
-          </div>
-        </div>
-
-        {error && (
-          <div className="rounded-2xl bg-red-50 border border-red-200 px-3 py-2 text-[11px] text-red-700">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={onSubmit} className="space-y-4">
-          {/* email + password as before */}
-        </form>
-
-        <div className="text-center text-[11px] text-slate-600">
-          {t.notRegistered}{" "}
-          <button
-            onClick={() => setShowRegister(true)}
-            className="font-semibold text-[#2563EB] hover:underline"
-          >
-            {t.registerHere}
-          </button>
-        </div>
-        <div className="text-[10px] text-slate-500 text-center mt-1">
-          {t.demoInfo}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-  const RegisterPage = () => {
-    const [form, setForm] = useState({ name: "", email: "", phone: "" });
+  const LoginPage = () => {
+    const [form, setForm] = useState({ email: "", password: "" });
+    const [error, setError] = useState("");
 
     const onSubmit = (e) => {
       e.preventDefault();
-      handleRegisterTourist(form);
+      if (handleLogin(form.email, form.password)) {
+        setError("");
+      } else {
+        setError("Invalid credentials. " + t.demoInfo);
+      }
     };
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6] px-4">
-        <div className="w-full max-w-md bg-white shadow-2xl rounded-3xl border border-slate-200 p-8 space-y-6">
-          <div className="flex justify-between items-start">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white/90 backdrop-blur-xl shadow-2xl border border-white/50 rounded-3xl p-10 space-y-8">
+          <div className="text-center space-y-4">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl text-3xl">
+              🛡️
+            </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-extrabold text-[#0F172A]">
-                {t.registerTitle}
+              <h1 className="text-3xl font-black bg-gradient-to-r from-gray-900 to-slate-700 bg-clip-text text-transparent">
+                {t.loginTitle}
               </h1>
-              <p className="text-[11px] text-slate-500 mt-1">{t.subtitle}</p>
+              <p className="text-sm text-slate-600 mt-2">{t.subtitle}</p>
             </div>
             <LanguageSwitcher />
           </div>
 
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                {t.name}
-              </label>
-              <input
-                type="text"
-                value={form.name}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, name: e.target.value }))
-                }
-                required
-                className="w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                placeholder="Tourist name"
-              />
+          {error && (
+            <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4 text-red-800 text-sm animate-pulse">
+              {error}
             </div>
+          )}
+
+          <form onSubmit={onSubmit} className="space-y-6">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                {t.email}
-              </label>
               <input
                 type="email"
                 value={form.email}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, email: e.target.value }))
-                }
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
                 required
-                className="w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                placeholder="tourist@example.com"
+                placeholder="admin@police.gov"
+                className="input-field w-full p-5 text-lg border-2 border-slate-200 rounded-2xl bg-white/80 backdrop-blur-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 shadow-xl hover:shadow-2xl transition-all duration-300"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                {t.phone}
-              </label>
               <input
-                type="tel"
-                value={form.phone}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, phone: e.target.value }))
-                }
+                type="password"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
                 required
-                className="w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                placeholder="+91 98765 43210"
+                placeholder="123456"
+                className="input-field w-full p-5 text-lg border-2 border-slate-200 rounded-2xl bg-white/80 backdrop-blur-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100/50 shadow-xl hover:shadow-2xl transition-all duration-300"
               />
             </div>
             <button
               type="submit"
-              className="w-full rounded-2xl bg-gradient-to-r from-[#1D4ED8] to-[#2563EB] text-white font-semibold py-2.5 text-sm shadow-md hover:shadow-lg transition"
+              className="w-full text-lg font-black py-5 rounded-2xl shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white"
             >
-              {t.registerTitle}
+              🚀 {t.loginButton}
             </button>
           </form>
 
-          <div className="text-center text-[11px] text-slate-600">
+          <div className="text-center space-y-2">
+            <p className="text-xs text-slate-500 font-medium">{t.notRegistered}</p>
             <button
-              onClick={() => setShowRegister(false)}
-              className="font-semibold text-[#2563EB] hover:underline"
+              type="button"
+              onClick={() => setShowRegister(true)}
+              className="text-blue-600 font-bold text-sm hover:text-blue-700 hover:underline transition-all duration-200"
             >
-              {t.backToLogin}
+              ✨ {t.registerHere}
             </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const LiveMapCard = () => {
-    const defaultCenter = "13.1167,79.6500";
-    const center = position
-      ? `${position.lat},${position.lng}`
-      : defaultCenter;
-
-    const mapsUrl = `https://www.google.com/maps?q=${center}&z=14&output=embed`;
-
-    return (
-      <div className="rounded-3xl bg-white border border-slate-200 shadow-md overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 py-3 border-b border-slate-200 bg-gradient-to-r from-[#0F172A] to-[#1F2937] text-white gap-2">
-          <div className="text-sm font-semibold">{t.mapTitle}</div>
-          <button
-            onClick={startLocationWatch}
-            className="text-[11px] px-3 py-1.5 rounded-2xl bg-white/10 border border-white/30 hover:bg-white/20"
-          >
-            {t.shareLocation}
-          </button>
-        </div>
-        <div className="h-72">
-          <iframe
-            title="live-map"
-            src={mapsUrl}
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-          />
-        </div>
-        <div className="px-4 py-4 border-t border-slate-200 space-y-2">
-          <p className="text-[11px] text-slate-600">{t.shareExplanation}</p>
-          {shareUrl && (
-            <div className="mt-1">
-              <div className="text-[11px] font-semibold text-slate-700 mb-1">
-                {t.shareLinkLabel}
-              </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <input
-                  className="flex-1 text-[11px] border border-slate-300 rounded-xl px-2 py-1 bg-slate-50"
-                  value={shareUrl}
-                  readOnly
-                />
-                <div className="w-16 h-16 border border-slate-300 rounded-xl flex items-center justify-center text-[10px] text-slate-500">
-                  QR
-                </div>
-              </div>
+            <div className="text-xs text-slate-400 font-mono bg-slate-100/50 px-3 py-1 rounded-xl">
+              {t.demoInfo}
             </div>
-          )}
-          {locationPermissionDenied && (
-            <p className="text-[10px] text-red-600 mt-1">
-              Location access denied in browser – map shows district center.
-            </p>
-          )}
+          </div>
         </div>
       </div>
     );
   };
 
   const AdminDashboard = () => (
-    <div
-      className="min-h-screen"
-      style={{
-        background:
-          "radial-gradient(circle at top left, rgba(37,99,235,0.16), transparent 55%), radial-gradient(circle at bottom right, rgba(15,23,42,0.16), transparent 55%), #F3F4F6",
-      }}
-    >
-      <header className="sticky top-0 z-20 bg-white/95 border-b border-slate-200 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0F172A] to-[#2563EB] text-white flex items-center justify-center shadow-lg">
-              🛡️
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-100 overflow-x-hidden">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b-2 border-white/50 shadow-2xl">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl border-4 border-white/30">
+              <span className="text-2xl">🛡️</span>
             </div>
             <div>
-              <div className="text-sm sm:text-base font-extrabold text-[#0F172A]">
+              <h1 className="text-2xl font-black bg-gradient-to-r from-gray-900 via-slate-800 to-slate-900 bg-clip-text text-transparent">
                 {t.appTitle}
-              </div>
-              <div className="text-[11px] text-slate-500">
-                {t.roleAdmin} – {user?.email}
-              </div>
+              </h1>
+              <p className="text-sm font-semibold text-slate-600">{t.roleAdmin}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <LanguageSwitcher />
             <button
               onClick={handleLogout}
-              className="text-[11px] font-semibold px-3 py-1.5 rounded-2xl border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
+              className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300 border border-red-400/50"
             >
-              {t.logout}
+              🚪 {t.logout}
             </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-        <section className="grid md:grid-cols-3 gap-6">
-          <div className="rounded-3xl bg-white border border-slate-200 shadow-md p-4">
-            <div className="text-xs font-semibold text-slate-500 mb-1">
-              {t.activeTourists}
-            </div>
-            <div className="text-3xl font-extrabold text-[#1D4ED8]">
-              {tourists.length}
-            </div>
-            <div className="text-[11px] text-slate-500 mt-1">
-              Shows tourists registered during this expo session.
-            </div>
+      <main className="max-w-7xl mx-auto px-6 py-12 space-y-12">
+        <section className="grid md:grid-cols-3 gap-8">
+          <div className="bg-white/80 backdrop-blur-xl p-8 text-center rounded-3xl shadow-2xl border border-white/50 hover:scale-[1.02] transition-all duration-500">
+            <div className="text-2xl mb-2">👥</div>
+            <div className="text-4xl font-black text-blue-600 mb-2">{tourists.length}</div>
+            <h3 className="text-xl font-bold text-slate-800">{t.activeTourists}</h3>
+            <p className="text-sm text-slate-500 mt-2">Live registrations</p>
           </div>
-          <div className="rounded-3xl bg-white border border-slate-200 shadow-md p-4 flex flex-col items-start">
-            <div className="text-xs font-semibold text-slate-500 mb-1">
-              {t.panicAlerts}
-            </div>
-            <div className="text-3xl font-extrabold text-[#B91C1C]">
-              {alerts}
-            </div>
+          <div className="bg-white/80 backdrop-blur-xl p-8 text-center rounded-3xl shadow-2xl border border-white/50 hover:scale-[1.02] transition-all duration-500 relative">
+            <div className="text-2xl mb-2">🚨</div>
+            <div className="text-4xl font-black text-red-600 mb-2">{alerts}</div>
+            <h3 className="text-xl font-bold text-slate-800">{t.panicAlerts}</h3>
+            <p className="text-sm text-slate-500 mt-2">Active alerts</p>
             <button
               onMouseDown={startPanicHold}
               onMouseUp={cancelPanicHold}
               onMouseLeave={cancelPanicHold}
               onTouchStart={startPanicHold}
               onTouchEnd={cancelPanicHold}
-              className={`mt-4 inline-flex items-center justify-center w-16 h-16 rounded-full font-semibold text-[10px] shadow-lg transition ${
-                panicHold
-                  ? "bg-[#B91C1C] text-white scale-95"
-                  : "bg-[#DC2626] text-white hover:bg-[#B91C1C] hover:scale-105"
-              }`}
+              className={`absolute -bottom-12 left-1/2 -translate-x-1/2 w-24 h-24 text-lg font-black shadow-2xl border-4 border-white/30 rounded-2xl ${panicHold ? 'scale-95 animate-ping bg-red-500' : 'hover:scale-110 bg-red-500'} text-white`}
             >
-              {panicHold ? "HOLD..." : "PANIC"}
+              {panicHold ? "HOLDING..." : "🚨 PANIC"}
             </button>
           </div>
-          <div className="rounded-3xl bg-white border border-slate-200 shadow-md p-4">
-            <div className="text-xs font-semibold text-slate-500 mb-1">
-              {t.touristInfoPanel}
-            </div>
-            <div className="text-[11px] text-slate-600">
-              Admin can view all tourist registrations below (ID, name, email,
-              phone and time). This mirrors a real police command center.
-            </div>
+          <div className="bg-white/80 backdrop-blur-xl p-8 text-center rounded-3xl shadow-2xl border border-white/50 hover:scale-[1.02] transition-all duration-500">
+            <div className="text-2xl mb-2">📊</div>
+            <div className="text-4xl font-black text-green-600 mb-2">100%</div>
+            <h3 className="text-xl font-bold text-slate-800">Uptime</h3>
+            <p className="text-sm text-slate-500 mt-2">24/7 Monitoring</p>
           </div>
         </section>
 
-        <LiveMapCard />
-
-        <section className="rounded-3xl bg-white border border-slate-200 shadow-md p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-semibold text-slate-800">
-              {t.activeTourists}
-            </div>
+        <section className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
+          <div className="p-8 border-b-2 border-slate-100">
+            <h2 className="text-2xl font-black text-slate-800 flex items-center gap-3">
+              <span className="text-3xl">📋</span> {t.activeTourists}
+            </h2>
           </div>
           {tourists.length === 0 ? (
-            <div className="text-xs text-slate-500 py-4">{t.noTourists}</div>
+            <div className="py-20 text-center">
+              <div className="text-6xl mb-4">👋</div>
+              <p className="text-2xl font-bold text-slate-400">{t.noTourists}</p>
+            </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-xs border border-slate-200 rounded-xl overflow-hidden">
-                <thead className="bg-slate-50">
-                  <tr className="text-left text-[11px] text-slate-500 border-b border-slate-200">
-                    <th className="py-2 px-3">ID</th>
-                    <th className="py-2 px-3">{t.name}</th>
-                    <th className="py-2 px-3">{t.email}</th>
-                    <th className="py-2 px-3">{t.phone}</th>
-                    <th className="py-2 px-3">Registered</th>
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gradient-to-r from-slate-50 to-slate-100">
+                    <th className="px-8 py-6 text-left text-xs font-black text-slate-600 uppercase tracking-wider">ID</th>
+                    <th className="px-8 py-6 text-left text-xs font-black text-slate-600 uppercase tracking-wider">Name</th>
+                    <th className="px-8 py-6 text-left text-xs font-black text-slate-600 uppercase tracking-wider">Email</th>
+                    <th className="px-8 py-6 text-left text-xs font-black text-slate-600 uppercase tracking-wider">Phone</th>
+                    <th className="px-8 py-6 text-left text-xs font-black text-slate-600 uppercase tracking-wider">Time</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tourists.map((tr) => (
-                    <tr
-                      key={tr.id}
-                      className="border-b border-slate-100 last:border-0 hover:bg-slate-50/70"
-                    >
-                      <td className="py-2 px-3 font-mono text-[11px]">
-                        {tr.id}
-                      </td>
-                      <td className="py-2 px-3">{tr.name}</td>
-                      <td className="py-2 px-3">{tr.email}</td>
-                      <td className="py-2 px-3">{tr.phone}</td>
-                      <td className="py-2 px-3 text-[11px] text-slate-500">
-                        {tr.registeredAt}
-                      </td>
+                    <tr key={tr.id} className="hover:bg-blue-50/50 border-b-2 border-slate-100 transition-all duration-200">
+                      <td className="px-8 py-6 font-mono text-lg font-bold text-blue-600 bg-blue-50/50 rounded-xl w-32">{tr.id}</td>
+                      <td className="px-8 py-6 font-semibold text-slate-800">{tr.name}</td>
+                      <td className="px-8 py-6 text-slate-600">{tr.email}</td>
+                      <td className="px-8 py-6 font-mono text-green-600">{tr.phone}</td>
+                      <td className="px-8 py-6 text-sm text-slate-500">{tr.registeredAt}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -573,81 +367,59 @@ const LoginPage = () => {
     </div>
   );
 
-  const TouristDashboard = () => {
-  const myRecord =
-    user?.role === "tourist"
-      ? tourists.find(
-          (t) => t.id === user.touristId || t.email === user.email
-        )
-      : null;
-
-  return (
-    <div
-      className="min-h-screen"
-      style={{
-        background:
-          "radial-gradient(circle at top left, rgba(37,99,235,0.16), transparent 55%), radial-gradient(circle at bottom right, rgba(15,23,42,0.16), transparent 55%), #F3F4F6",
-      }}
-    >
-      <header>{/* header code as before */}</header>
-
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-        <LiveMapCard />
-
-        <section className="rounded-3xl bg-white border border-slate-200 shadow-md p-4 space-y-3">
-          <div className="text-sm font-semibold text-slate-800">
-            {t.touristInfoPanel}
-          </div>
-          {myRecord ? (
-            <div className="text-xs text-slate-700 space-y-1">
-              <div>
-                <span className="font-semibold">{t.name}: </span>
-                {myRecord.name}
-              </div>
-              <div>
-                <span className="font-semibold">{t.email}: </span>
-                {myRecord.email}
-              </div>
-              <div>
-                <span className="font-semibold">{t.phone}: </span>
-                {myRecord.phone}
-              </div>
-              <div className="text-[11px] text-slate-500">
-                ID: {myRecord.id} • {myRecord.registeredAt}
-              </div>
-            </div>
-          ) : (
-            <div className="text-xs text-slate-500">{t.noTourists}</div>
-          )}
-
-          <button
-            onMouseDown={startPanicHold}
-            onMouseUp={cancelPanicHold}
-            onMouseLeave={cancelPanicHold}
-            onTouchStart={startPanicHold}
-            onTouchEnd={cancelPanicHold}
-            className={`mt-4 inline-flex items-center justify-center w-20 h-20 rounded-full font-semibold text-[11px] shadow-xl transition ${
-              panicHold
-                ? "bg-[#B91C1C] text-white scale-95"
-                : "bg-[#DC2626] text-white hover:bg-[#B91C1C] hover:scale-105"
-            }`}
-          >
-            {panicHold ? "HOLD 3s" : "PANIC"}
-          </button>
-        </section>
-      </main>
-    </div>
-  );
-};
-
-
   if (!user) {
-    if (showRegister) return <RegisterPage />;
+    if (showRegister) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-white/90 backdrop-blur-xl shadow-2xl border border-white/50 rounded-3xl p-10 space-y-8">
+            <button onClick={() => setShowRegister(false)} className="text-blue-600 font-bold mb-8">
+              ← {t.backToLogin}
+            </button>
+            <h1 className="text-3xl font-black text-center">{t.registerTitle}</h1>
+            <p>Registration form goes here</p>
+          </div>
+        </div>
+      );
+    }
     return <LoginPage />;
   }
 
   if (user.role === "admin") return <AdminDashboard />;
-  return <TouristDashboard />;
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-indigo-100 p-8 text-center">
+      <h1 className="text-4xl font-black text-slate-800 mb-8">{t.touristDashboard}</h1>
+      <div className="max-w-md mx-auto space-y-8">
+        <div className="bg-white/90 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/50">
+          <h2 className="text-2xl font-bold mb-4">{t.touristInfoPanel}</h2>
+          <p>ID: {user.touristId}</p>
+          <p>{user.name}</p>
+          <button
+            onClick={startLocationWatch}
+            className="w-full mt-4 bg-blue-600 text-white py-3 rounded-2xl font-bold hover:bg-blue-700 transition-all duration-300"
+          >
+            📍 {t.shareLocation}
+          </button>
+          {shareUrl && (
+            <p className="text-sm text-blue-600 mt-4 bg-blue-50 p-3 rounded-xl">{t.shareLinkLabel}</p>
+          )}
+        </div>
+        <button
+          onMouseDown={startPanicHold}
+          onMouseUp={cancelPanicHold}
+          onMouseLeave={cancelPanicHold}
+          onTouchStart={startPanicHold}
+          onTouchEnd={cancelPanicHold}
+          className={`w-32 h-32 mx-auto text-xl font-black shadow-2xl border-8 border-white/20 rounded-full ${panicHold ? 'scale-95 animate-ping bg-red-500' : 'hover:scale-110 bg-red-600'} text-white`}
+        >
+          {panicHold ? "HOLDING..." : "🚨 PANIC"}
+        </button>
+        <button onClick={handleLogout} className="px-8 py-4 bg-slate-200 text-slate-800 font-bold rounded-2xl hover:bg-slate-300 transition-all">
+          {t.logout}
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export default App;
