@@ -2,20 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  html {
-    font-family: 'Inter, system-ui, sans-serif';
-  }
+:root {
+  --primary-blue: #1E3A8A;
+  --secondary-blue: #3B82F6;
+  --beige-50: #FEF9E7;
+  --beige-100: #F5F5DC;
+  --beige-200: #EDE4D5;
+  --beige-300: #D2B48C;
 }
 
-@layer components {
-  .glass-card {
-    @apply bg-white/80 backdrop-blur-xl border border-white/50 shadow-2xl rounded-3xl p-8;
-  }
-  .btn-primary {
-    @apply bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-4 px-8 rounded-2xl hover:shadow-2xl transition-all hover:scale-[1.02];
-  }
-  .btn-danger {
-    @apply bg-gradient-to-r from-red-500 to-red-600 text-white font-bold py-4 px-8 rounded-2xl hover:shadow-2xl transition-all hover:scale-[1.02] animate-pulse;
-  }
+body {
+  background: linear-gradient(135deg, var(--beige-50) 0%, #F8FAFC 100%);
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
