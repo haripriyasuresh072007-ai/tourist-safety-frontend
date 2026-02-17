@@ -1,23 +1,40 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  --primary-blue: #1E3A8A;
-  --secondary-blue: #3B82F6;
-  --beige-50: #FEF9E7;
-  --beige-100: #F5F5DC;
-  --beige-200: #EDE4D5;
-  --beige-300: #D2B48C;
-}
-
-body {
-  background: linear-gradient(135deg, var(--beige-50) 0%, #F8FAFC 100%);
-  font-family: 'Inter', -apple-system, sans-serif;
-}
-
-.glass {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
+.glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.input-field:focus {
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+}
+
+.btn-panic {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
+  box-shadow: 0 20px 40px rgba(239, 68, 68, 0.4);
+}
+
+.stat-card {
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,250,252,0.7));
+}
+
+.table-container {
+  border-radius: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes pulse-once {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+.animate-pulse-once {
+  animation: pulse-once 2s ease-in-out;
 }
