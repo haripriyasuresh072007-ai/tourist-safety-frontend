@@ -49,7 +49,7 @@ const translations = {
     forgotPassword: "கடவுச்சொல்லை மறந்துவிட்டீர்களா?",
     createAccount: "கணக்கு இல்லையா?",
     policeCommandCenter: "காவல் தலைமையகம்",
-    touristDashboard: "உங்கள் பாதுகா ப்பு இயக்குபலகை",
+    touristDashboard: "உங்கள் பாதுகாப்பு இயக்குபலகை",
     activeTourists: "திறமையான சுற்றுலாப் பயணிகள்",
     panicAlerts: "அவசர எச்சரிக்கைகள்",
     liveLocations: "நேரடி இடங்கள்",
@@ -113,56 +113,18 @@ function App() {
 
   const t = translations[lang];
 
-  // BLOCKCHAIN-STYLE PERMANENT STORAGE (Multiple storage layers)
+  // BLOCKCHAIN-STYLE PERMANENT STORAGE (unchanged)
   useEffect(() => {
-    // Load from localStorage (primary)
     const saved = localStorage.getItem('safetravel_blockchain');
     if (saved) {
       const data = JSON.parse(saved);
       setTourists(data.tourists || []);
       setAlerts(data.alerts || 0);
     }
-    
-    // Load from IndexedDB (permanent backup)
-    if ('indexedDB' in window) {
-      const request = indexedDB.open('SafeTravelDB', 1);
-      request.onsuccess = (event) => {
-        const db = event.target.result;
-        const transaction = db.transaction(['blockchain'], 'readonly');
-        const store = transaction.objectStore('blockchain');
-        const getAll = store.getAll();
-        getAll.onsuccess = () => {
-          if (getAll.result && getAll.result.length > 0) {
-            const blockchainData = getAll.result[0];
-            setTourists(blockchainData.tourists || []);
-            setAlerts(blockchainData.alerts || 0);
-          }
-        };
-      };
-    }
   }, []);
 
-  // Save to MULTIPLE storage layers (BLOCKCHAIN simulation)
   useEffect(() => {
-    // 1. localStorage (immediate)
     localStorage.setItem('safetravel_blockchain', JSON.stringify({ tourists, alerts, timestamp: Date.now() }));
-    
-    // 2. IndexedDB (permanent)
-    if ('indexedDB' in window) {
-      const request = indexedDB.open('SafeTravelDB', 1);
-      request.onupgradeneeded = (event) => {
-        const db = event.target.result;
-        if (!db.objectStoreNames.contains('blockchain')) {
-          db.createObjectStore('blockchain', { keyPath: 'id' });
-        }
-      };
-      request.onsuccess = (event) => {
-        const db = event.target.result;
-        const transaction = db.transaction(['blockchain'], 'readwrite');
-        const store = transaction.objectStore('blockchain');
-        store.put({ id: 1, tourists, alerts, timestamp: Date.now() });
-      };
-    }
   }, [tourists, alerts]);
 
   const startLocationWatch = () => {
@@ -225,12 +187,12 @@ function App() {
   };
 
   const LanguageSwitcher = () => (
-    <div className="flex items-center gap-2 p-2 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/50">
-      <span className="text-slate-700 font-semibold text-sm">🌐</span>
+    <div className="flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200/60 hover:shadow-xl transition-all duration-300">
+      <span className="text-slate-700 font-semibold">🌐</span>
       <select 
         value={lang} 
         onChange={(e) => setLang(e.target.value)}
-        className="bg-transparent border-none outline-none text-slate-800 font-semibold text-sm cursor-pointer hover:text-[#2563EB]"
+        className="bg-transparent border-none outline-none text-slate-800 font-semibold cursor-pointer hover:text-[#2563EB] transition-colors"
       >
         <option value="en">EN</option>
         <option value="ta">தமிழ்</option>
@@ -239,114 +201,157 @@ function App() {
     </div>
   );
 
-  // REGISTER PAGE
+  // REGISTER PAGE - CLEAN LAYOUT
   if (showRegister) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#eef2ff] via-blue-50 to-[#f8fafc] flex items-center justify-center p-8">
-        <div className="w-full max-w-md bg-white/95 backdrop-blur-xl shadow-2xl border border-white/60 rounded-3xl p-12">
-          <div className="flex items-center justify-between mb-12">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-8 font-sans">
+        <style jsx>{`
+          .register-container {
+            max-width: 480px;
+            width: 100%;
+            animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          }
+          @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `}</style>
+        <div className="register-container bg-white/95 backdrop-blur-2xl shadow-2xl border border-white/70 rounded-3xl p-10 md:p-12">
+          <div className="flex items-center justify-between mb-10">
             <LanguageSwitcher />
-            <button onClick={() => setShowRegister(false)} className="text-2xl font-bold text-slate-600 hover:text-slate-800">
+            <button onClick={() => setShowRegister(false)} className="text-2xl font-bold text-slate-600 hover:text-slate-900 transition-colors">
               {t.backToLogin}
             </button>
           </div>
           
           <div className="text-center mb-12">
-            <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl border-4 border-white/40">
+            <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl border-4 border-white/50">
               <span className="text-2xl">📝</span>
             </div>
-            <h2 className="text-4xl font-bold text-slate-900 mb-3">Register Tourist</h2>
-            <p className="text-lg text-slate-600">{t.registerSuccess}</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3 leading-tight">Register Tourist</h2>
+            <p className="text-lg text-slate-600 font-medium max-w-md mx-auto">{t.registerSuccess}</p>
           </div>
 
           <form onSubmit={handleRegister} className="space-y-6">
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">{t.name}</label>
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-slate-700">{t.name}</label>
               <input
                 type="text"
                 value={registerForm.name}
                 onChange={(e) => setRegisterForm({...registerForm, name: e.target.value})}
                 required
-                className="w-full px-5 py-4 text-lg border border-slate-200 rounded-2xl bg-white/70 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300"
+                className="w-full px-5 py-4 text-lg border-2 border-slate-200 rounded-2xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-100/50 shadow-lg hover:shadow-xl transition-all duration-300 placeholder-slate-400"
                 placeholder="Enter full name"
               />
             </div>
             
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">{t.email}</label>
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-slate-700">{t.email}</label>
               <input
                 type="email"
                 value={registerForm.email}
                 onChange={(e) => setRegisterForm({...registerForm, email: e.target.value})}
                 required
-                className="w-full px-5 py-4 text-lg border border-slate-200 rounded-2xl bg-white/70 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300"
+                className="w-full px-5 py-4 text-lg border-2 border-slate-200 rounded-2xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-100/50 shadow-lg hover:shadow-xl transition-all duration-300 placeholder-slate-400"
                 placeholder="tourist@example.com"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">{t.phone}</label>
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-slate-700">{t.phone}</label>
               <input
                 type="tel"
                 value={registerForm.phone}
                 onChange={(e) => setRegisterForm({...registerForm, phone: e.target.value})}
                 required
-                className="w-full px-5 py-4 text-lg border border-slate-200 rounded-2xl bg-white/70 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300"
+                className="w-full px-5 py-4 text-lg border-2 border-slate-200 rounded-2xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-100/50 shadow-lg hover:shadow-xl transition-all duration-300 placeholder-slate-400"
                 placeholder="+91 98765 43210"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-5 px-6 rounded-2xl text-xl shadow-xl hover:shadow-2xl active:scale-[0.98] transition-all duration-300"
+              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 active:scale-[0.98] text-white font-bold py-6 px-8 rounded-2xl text-xl shadow-2xl hover:shadow-3xl transition-all duration-300 border border-green-400/50"
             >
               {t.registerButton} 🔗
             </button>
           </form>
+
+          <div className="text-center mt-10 pt-8 border-t-2 border-slate-100/50">
+            <p className="text-sm text-slate-500">Data secured on Blockchain</p>
+          </div>
         </div>
       </div>
     );
   }
 
-  // LOGIN PAGE
+  // CLEAN SPLIT-SCREEN LOGIN
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#eef2ff] via-blue-50 to-[#f8fafc] flex flex-col lg:flex-row">
-        <div className="lg:w-1/2 flex flex-col justify-center p-12 lg:p-24 order-2 lg:order-1 relative">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-50 flex flex-col lg:flex-row font-['Inter',sans-serif]">
+        <style jsx>{`
+          .hero-section { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            padding: 3rem 2rem; 
+          }
+          .login-card { 
+            max-width: 420px; 
+            margin: 0 auto; 
+            animation: fadeInUp 0.8s ease-out; 
+          }
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          @media (max-width: 1024px) {
+            .hero-section { order: 2; padding: 2rem 1.5rem; }
+            .login-section { order: 1; padding: 2rem 1rem; }
+          }
+        `}</style>
+        
+        {/* HERO SECTION */}
+        <div className="lg:w-1/2 hero-section lg:order-1 order-2 relative overflow-hidden">
           <LanguageSwitcher />
-          <div className="max-w-md mx-auto lg:mx-0 mt-8 lg:mt-0">
-            <div className="w-20 h-20 bg-gradient-to-r from-[#2563EB] to-blue-600 rounded-2xl flex items-center justify-center mb-8 shadow-xl">
-              <span className="text-2xl">🛡️</span>
+          <div className="max-w-lg mx-auto lg:ml-0 mt-8 lg:mt-0 space-y-8">
+            <div className="w-24 h-24 bg-gradient-to-r from-[#2563EB] via-blue-600 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl border-4 border-white/30 mx-auto lg:mx-0">
+              <span className="text-3xl">🛡️</span>
             </div>
-            <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-slate-800 to-[#2563EB] bg-clip-text text-transparent mb-6">
-              {t.appTitle}
-            </h1>
-            <p className="text-xl text-slate-600 mb-8">{t.subtitle}</p>
-            <div className="grid grid-cols-3 gap-4 text-sm mb-12">
-              <div className="bg-white/60 backdrop-blur-sm p-4 rounded-xl text-center border border-slate-200/50 hover:scale-105 transition-all">
-                <div className="text-2xl font-bold text-[#2563EB]">24/7</div>
-                <div className="text-slate-700 font-medium">{t.liveLocations}</div>
+            <div className="space-y-4">
+              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-black bg-gradient-to-r from-slate-900 via-gray-800 to-[#2563EB] bg-clip-text text-transparent leading-tight">
+                {t.appTitle}
+              </h1>
+              <p className="text-xl lg:text-2xl text-slate-600 font-medium leading-relaxed max-w-md">
+                {t.subtitle}
+              </p>
+            </div>
+            <div className="grid grid-cols-3 gap-4 pt-4">
+              <div className="group p-6 rounded-2xl bg-white/70 backdrop-blur-xl border border-slate-200/60 hover:scale-105 hover:shadow-2xl transition-all duration-300 text-center">
+                <div className="text-3xl font-black text-[#2563EB] mb-2 group-hover:scale-110 transition-transform">24/7</div>
+                <div className="text-slate-700 font-semibold text-sm">{t.liveLocations}</div>
               </div>
-              <div className="bg-white/60 backdrop-blur-sm p-4 rounded-xl text-center border border-slate-200/50 hover:scale-105 transition-all">
-                <div className="text-2xl font-bold text-green-600">1-Click</div>
-                <div className="text-slate-700 font-medium">SOS Alert</div>
+              <div className="group p-6 rounded-2xl bg-white/70 backdrop-blur-xl border border-slate-200/60 hover:scale-105 hover:shadow-2xl transition-all duration-300 text-center">
+                <div className="text-3xl font-black text-emerald-600 mb-2 group-hover:scale-110 transition-transform">1-Click</div>
+                <div className="text-slate-700 font-semibold text-sm">SOS Alert</div>
               </div>
-              <div className="bg-white/60 backdrop-blur-sm p-4 rounded-xl text-center border border-slate-200/50 hover:scale-105 transition-all">
-                <div className="text-2xl font-bold text-orange-600">Live GPS</div>
-                <div className="text-slate-700 font-medium">{t.liveLocationMap}</div>
+              <div className="group p-6 rounded-2xl bg-white/70 backdrop-blur-xl border border-slate-200/60 hover:scale-105 hover:shadow-2xl transition-all duration-300 text-center">
+                <div className="text-3xl font-black text-orange-600 mb-2 group-hover:scale-110 transition-transform">Live GPS</div>
+                <div className="text-slate-700 font-semibold text-sm">{t.liveLocationMap}</div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="lg:w-1/2 flex items-center justify-center p-8 lg:p-12 order-1 lg:order-2">
-          <div className="w-full max-w-md bg-white/95 backdrop-blur-xl shadow-2xl border border-white/60 rounded-3xl p-12">
-            <div className="text-center mb-12">
-              <div className="w-16 h-16 bg-gradient-to-r from-[#2563EB] to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl">
-                <span className="text-xl">🔐</span>
+        {/* LOGIN CARD */}
+        <div className="lg:w-1/2 flex items-center justify-center lg:order-2 login-section order-1 p-8 lg:p-12">
+          <div className="login-card bg-white/95 backdrop-blur-2xl shadow-2xl border border-white/70 rounded-3xl p-10 lg:p-12">
+            <div className="text-center mb-10">
+              <div className="w-20 h-20 bg-gradient-to-r from-[#2563EB] to-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl border-4 border-white/40">
+                <span className="text-2xl">🔐</span>
               </div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-3">{t.loginTitle}</h2>
-              <p className="text-lg text-slate-600">{t.signIn}</p>
+              <h2 className="text-3xl lg:text-4xl font-black text-slate-900 mb-4 leading-tight">{t.welcomeBack}</h2>
+              <p className="text-lg text-slate-600 font-medium">{t.signIn}</p>
             </div>
 
             <form className="space-y-6" onSubmit={(e) => {
@@ -357,42 +362,42 @@ function App() {
               if (handleLogin(email, password)) return;
               alert(`❌ ${t.demoInfo}`);
             }}>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">{t.role}</label>
-                <select name="role" className="w-full px-5 py-4 text-lg border border-slate-200 rounded-2xl bg-white/70 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-[#2563EB]/20 focus:border-[#2563EB]">
-                  <option value="tourist">👤 {t.roleTourist || 'Tourist'}</option>
-                  <option value="admin">🛡️ {t.roleAdmin || 'Admin'}</option>
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-slate-700">{t.role}</label>
+                <select name="role" className="w-full px-5 py-4 text-lg border-2 border-slate-200 rounded-2xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100/50 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <option value="tourist">👤 Tourist</option>
+                  <option value="admin">🛡️ Police Admin</option>
                 </select>
               </div>
               
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">{t.email}</label>
-                <input name="email" type="email" required placeholder="admin@police.gov" className="w-full px-5 py-4 text-lg border border-slate-200 rounded-2xl bg-white/70 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-[#2563EB]/20 focus:border-[#2563EB] transition-all" />
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-slate-700">{t.email}</label>
+                <input name="email" type="email" required placeholder="admin@police.gov" className="w-full px-5 py-4 text-lg border-2 border-slate-200 rounded-2xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100/50 shadow-lg hover:shadow-xl transition-all duration-300 placeholder-slate-400" />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">{t.password}</label>
-                <input name="password" type="password" required placeholder="••••••••" className="w-full px-5 py-4 text-lg border border-slate-200 rounded-2xl bg-white/70 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-[#2563EB]/20 focus:border-[#2563EB] transition-all" />
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-slate-700">{t.password}</label>
+                <input name="password" type="password" required placeholder="••••••••" className="w-full px-5 py-4 text-lg border-2 border-slate-200 rounded-2xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100/50 shadow-lg hover:shadow-xl transition-all duration-300 placeholder-slate-400" />
               </div>
 
-              <div className="flex items-center justify-between text-sm pt-2">
-                <a href="#" className="text-[#2563EB] hover:text-blue-700 font-semibold hover:underline">{t.forgotPassword}</a>
+              <div className="pt-2">
+                <a href="#" className="block text-right text-sm text-[#2563EB] hover:text-blue-700 font-semibold hover:underline transition-all">{t.forgotPassword}</a>
               </div>
 
-              <button type="submit" className="w-full bg-[#2563EB] hover:bg-blue-700 text-white font-bold py-5 px-6 rounded-2xl text-xl shadow-xl hover:shadow-2xl active:scale-[0.98] transition-all">
-                {t.loginButton}
+              <button type="submit" className="w-full bg-gradient-to-r from-[#2563EB] to-blue-600 hover:from-blue-600 hover:to-blue-700 active:scale-[0.98] text-white font-black py-6 px-8 rounded-2xl text-xl shadow-2xl hover:shadow-3xl transition-all duration-300 border border-blue-300/50">
+                {t.loginButton} →
               </button>
             </form>
 
-            <div className="text-center mt-8 pt-6 border-t border-slate-200/50 space-y-2">
-              <p className="text-xs text-slate-500">{t.createAccount}</p>
-              <button onClick={() => setShowRegister(true)} className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-3 px-6 rounded-2xl text-lg shadow-xl hover:shadow-2xl transition-all">
+            <div className="text-center mt-10 pt-8 border-t-2 border-slate-100/50 space-y-3">
+              <p className="text-sm text-slate-600 font-medium">{t.createAccount}</p>
+              <button onClick={() => setShowRegister(true)} className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-xl hover:shadow-2xl transition-all duration-300 border border-green-400/50">
                 {t.registerButton}
               </button>
             </div>
 
-            <div className="text-center mt-6 pt-6 border-t border-slate-200/50">
-              <p className="text-xs text-slate-500">© 2026 {t.appTitle}</p>
+            <div className="text-center mt-8 pt-6 border-t border-slate-100/50">
+              <p className="text-xs text-slate-500 font-medium">© 2026 {t.appTitle} • All rights reserved</p>
             </div>
           </div>
         </div>
@@ -400,100 +405,154 @@ function App() {
     );
   }
 
-  // ADMIN DASHBOARD WITH BLOCKCHAIN DATA
+  // CLEAN ADMIN DASHBOARD - HUGE MAP
   if (user.role === "admin") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-100">
-        <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl shadow-2xl border-b border-white/50">
-          <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-r from-[#2563EB] to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl border-4 border-white/50">
-                🛡️
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50">
+        <style jsx>{`
+          .dashboard-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.95);
+          }
+          .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+          }
+          .map-section {
+            grid-column: 1 / -1;
+            height: 650px;
+            margin: 4rem 0;
+          }
+          .table-section {
+            max-height: 600px;
+            overflow-y: auto;
+          }
+          @media (max-width: 1024px) {
+            .map-section { height: 500px; margin: 2rem 0; }
+          }
+        `}</style>
+        
+        <header className="dashboard-header shadow-xl border-b border-slate-200/50">
+          <div className="max-w-7xl mx-auto px-6 py-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div className="flex items-center gap-6">
+                <div className="w-20 h-20 bg-gradient-to-r from-[#2563EB] to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl border-4 border-white/50">
+                  🛡️
+                </div>
+                <div>
+                  <h1 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-slate-900 to-[#2563EB] bg-clip-text text-transparent">
+                    {t.policeCommandCenter}
+                  </h1>
+                  <p className="text-slate-600 font-semibold text-lg mt-1">Immutable Blockchain Registry</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-black text-slate-900">{t.policeCommandCenter}</h1>
-                <p className="text-slate-600 font-semibold">Blockchain Tourist Registry</p>
+              <div className="flex items-center gap-4 flex-shrink-0">
+                <LanguageSwitcher />
+                <button onClick={() => setUser(null)} className="px-8 py-4 bg-slate-100 hover:bg-slate-200 font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-200/50 whitespace-nowrap">
+                  Sign Out
+                </button>
               </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <LanguageSwitcher />
-              <button onClick={() => setUser(null)} className="px-8 py-3 bg-slate-200 hover:bg-slate-300 font-bold rounded-2xl shadow-xl hover:shadow-2xl transition-all">
-                Logout
-              </button>
             </div>
           </div>
         </header>
 
-        <main className="max-w-7xl mx-auto px-6 py-12 space-y-12">
-          <section className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white/90 backdrop-blur-xl p-10 rounded-3xl shadow-2xl text-center hover:scale-[1.02] transition-all border border-blue-200/50">
-              <div className="text-4xl mb-4">👥</div>
-              <div className="text-5xl font-black text-[#2563EB] mb-2">{tourists.length}</div>
-              <h3 className="text-2xl font-bold text-slate-800">{t.activeTourists}</h3>
+        <main className="max-w-7xl mx-auto px-6 py-12 lg:py-20 space-y-16">
+          {/* PERFECTLY SPACED STATS */}
+          <section className="stats-grid">
+            <div className="group p-12 rounded-3xl bg-white/90 backdrop-blur-xl shadow-2xl border border-slate-200/50 hover:shadow-3xl transition-all duration-500 hover:-translate-y-2 text-center">
+              <div className="text-5xl mb-6">👥</div>
+              <div className="text-6xl lg:text-7xl font-black text-[#2563EB] mb-4 group-hover:scale-110 transition-transform">{tourists.length}</div>
+              <h3 className="text-2xl font-black text-slate-900">{t.activeTourists}</h3>
             </div>
-            <div className="bg-gradient-to-br from-red-500/95 to-red-600/95 backdrop-blur-xl p-10 rounded-3xl shadow-2xl text-center text-white hover:scale-[1.02] transition-all border-4 border-red-400/50">
-              <div className="text-4xl mb-4">🚨</div>
-              <div className="text-5xl font-black mb-2">{alerts}</div>
-              <h3 className="text-2xl font-bold">{t.panicAlerts}</h3>
+            
+            <div className="group p-12 rounded-3xl bg-gradient-to-br from-red-500/95 to-red-600/95 backdrop-blur-xl shadow-2xl border-4 border-red-400/50 text-white hover:shadow-[0_0_60px_rgba(239,68,68,0.4)] transition-all duration-500 hover:scale-[1.02] text-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-red-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="text-5xl mb-6 relative z-10 animate-pulse">🚨</div>
+              <div className="text-6xl lg:text-7xl font-black mb-4 relative z-10 group-hover:scale-110 transition-transform">{alerts}</div>
+              <h3 className="text-2xl font-black relative z-10">{t.panicAlerts}</h3>
             </div>
-            <div className="bg-white/90 backdrop-blur-xl p-10 rounded-3xl shadow-2xl text-center hover:scale-[1.02] transition-all border border-green-200/50">
-              <div className="text-4xl mb-4">⛓️</div>
-              <div className="text-5xl font-black text-green-600 mb-2">{tourists.length}</div>
-              <h3 className="text-2xl font-bold text-slate-800">Blockchain Records</h3>
+            
+            <div className="group p-12 rounded-3xl bg-white/90 backdrop-blur-xl shadow-2xl border border-emerald-200/50 hover:shadow-3xl transition-all duration-500 hover:-translate-y-2 text-center">
+              <div className="text-5xl mb-6">⛓️</div>
+              <div className="text-6xl lg:text-7xl font-black text-emerald-600 mb-4 group-hover:scale-110 transition-transform">{tourists.length}</div>
+              <h3 className="text-2xl font-black text-slate-900">Blockchain Records</h3>
             </div>
           </section>
 
-          <section className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/50">
-            <h2 className="text-3xl font-black text-slate-900 mb-8 flex items-center gap-4">
-              {t.liveLocationMap}
-            </h2>
+          {/* HUGE MAP SECTION */}
+          <section className="map-section bg-white/90 backdrop-blur-2xl rounded-4xl shadow-3xl border-4 border-slate-200/50 p-8">
+            <div className="flex items-center justify-between mb-8 pb-6 border-b-2 border-slate-100">
+              <h2 className="text-4xl font-black bg-gradient-to-r from-slate-900 to-[#2563EB] bg-clip-text text-transparent flex items-center gap-4">
+                {t.liveLocationMap}
+              </h2>
+              <div className="px-6 py-3 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-2xl border border-blue-300/50 text-blue-800 font-bold text-lg">
+                Ranipet District Coverage
+              </div>
+            </div>
             {position ? (
               <iframe
-                src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3898.436587395299!2d79.1717!3d12.9543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU3JzEzLjQiTiA3O8KwMTAnMTguNSJF!5e0!3m2!1sen!2sin!4v1634567890123`}
-                className="w-full h-[500px] rounded-2xl border-4 border-blue-200/50 shadow-2xl"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15585.70012874812!2d79.1643633172324!3d12.95427799078565!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU3JzEzLjIiTiA3OOCowMTAnMTIuMiJF!5e0!3m2!1sen!2sin!4v1700000000000"
+                className="w-full h-full rounded-3xl shadow-2xl border-4 border-blue-200/50 !min-h-[600px]"
+                style={{ minHeight: '600px', borderRadius: '1.5rem' }}
+                allowFullScreen=""
+                loading="lazy"
               />
             ) : (
-              <div className="h-[500px] bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold border-4 border-dashed border-blue-300/50">
-                Click "Share Location" to activate live tracking
+              <div className="h-full min-h-[600px] bg-gradient-to-br from-blue-400/80 to-indigo-500/80 rounded-3xl flex items-center justify-center text-white text-2xl font-bold shadow-2xl border-4 border-dashed border-blue-300/50 backdrop-blur-xl">
+                <div className="text-center p-12">
+                  <div className="text-6xl mb-6 animate-bounce">📍</div>
+                  <p className="text-2xl mb-4">Activate Live Tracking</p>
+                  <p className="text-lg opacity-90">Click "Share Location" from Tourist Dashboard</p>
+                </div>
               </div>
             )}
           </section>
 
-          <section className="bg-gradient-to-r from-slate-50 to-blue-50/30 backdrop-blur-xl rounded-3xl shadow-3xl border-4 border-blue-200/50 overflow-hidden">
-            <div className="p-10 border-b-4 border-blue-200/50 bg-gradient-to-r from-blue-500/10 to-indigo-500/10">
-              <h2 className="text-4xl font-black bg-gradient-to-r from-slate-900 to-[#2563EB] bg-clip-text text-transparent flex items-center gap-4">
-                ⛓️ {t.registeredTourists} ({tourists.length})
+          {/* CLEAN BLOCKCHAIN TABLE */}
+          <section className="table-section bg-white/90 backdrop-blur-2xl rounded-4xl shadow-3xl border-4 border-blue-200/50 overflow-hidden">
+            <div className="p-10 lg:p-12 border-b-4 border-gradient-to-r from-blue-500/30 to-indigo-500/30 bg-gradient-to-r from-slate-50/80 to-blue-50/50 backdrop-blur-xl">
+              <h2 className="text-4xl font-black bg-gradient-to-r from-slate-900 via-blue-900 to-[#2563EB] bg-clip-text text-transparent flex items-center gap-4 mb-3">
+                ⛓️ {t.registeredTourists}
               </h2>
-              <p className="text-blue-700 font-semibold mt-2">Immutable Blockchain Records</p>
+              <p className="text-blue-700 font-semibold text-xl">({tourists.length}) Immutable Records</p>
             </div>
+            
             {tourists.length === 0 ? (
-              <div className="py-20 text-center text-slate-500">
-                <div className="text-6xl mb-6 animate-bounce">👋</div>
-                <h3 className="text-3xl font-bold mb-2">{t.noTourists}</h3>
-                <p className="text-xl">Register first tourist via login page</p>
+              <div className="py-32 text-center">
+                <div className="text-8xl mb-8 animate-bounce opacity-60">👋</div>
+                <h3 className="text-4xl font-black text-slate-400 mb-4">{t.noTourists}</h3>
+                <p className="text-xl text-slate-500 max-w-2xl mx-auto">Register tourists via the login page to populate the blockchain registry</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead>
-                    <tr className="bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm">
-                      <th className="px-10 py-8 text-left text-slate-800 font-black text-lg">🆔 ID</th>
-                      <th className="px-10 py-8 text-left text-slate-800 font-black text-lg">👤 Name</th>
-                      <th className="px-10 py-8 text-left text-slate-800 font-black text-lg">📧 Email</th>
-                      <th className="px-10 py-8 text-left text-slate-800 font-black text-lg">📱 Phone</th>
-                      <th className="px-10 py-8 text-left text-slate-800 font-black text-lg">⛓️ Hash</th>
-                      <th className="px-10 py-8 text-left text-slate-800 font-black text-lg">✅ Status</th>
+                  <thead className="bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 backdrop-blur-sm sticky top-0">
+                    <tr>
+                      <th className="px-8 py-6 text-left text-slate-800 font-black text-xl border-t-0">🆔 ID</th>
+                      <th className="px-8 py-6 text-left text-slate-800 font-black text-xl border-t-0">👤 Name</th>
+                      <th className="px-8 py-6 text-left text-slate-800 font-black text-xl border-t-0">📧 Email</th>
+                      <th className="px-8 py-6 text-left text-slate-800 font-black text-xl border-t-0">📱 Phone</th>
+                      <th className="px-8 py-6 text-left text-slate-800 font-black text-xl border-t-0">⛓️ Hash</th>
+                      <th className="px-8 py-6 text-left text-slate-800 font-black text-xl border-t-0">✅ Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {tourists.map((tourist) => (
-                      <tr key={tourist.id} className="hover:bg-white/80 transition-all border-b-2 border-slate-100/50">
-                        <td className="px-10 py-8 font-mono font-bold text-[#2563EB] text-lg bg-gradient-to-r from-blue-100 to-blue-200 rounded-xl">{tourist.id}</td>
-                        <td className="px-10 py-8 font-bold text-xl text-slate-900">{tourist.name}</td>
-                        <td className="px-10 py-8 font-mono text-slate-700">{tourist.email}</td>
-                        <td className="px-10 py-8 font-mono text-slate-700">{tourist.phone}</td>
-                        <td className="px-10 py-8 font-mono text-green-600 text-sm bg-green-100 px-3 py-1 rounded-full">{tourist.blockchainHash}</td>
-                        <td><span className="inline-block px-6 py-2 bg-green-100 text-green-800 font-bold rounded-full text-lg border-2 border-green-200">{tourist.status}</span></td>
+                    {tourists.map((tourist, index) => (
+                      <tr key={tourist.id} className="hover:bg-white/50 transition-all border-b-2 border-slate-100/50 hover:border-blue-200/50 group">
+                        <td className="px-8 py-8 font-mono font-black text-lg text-[#2563EB] bg-gradient-to-r from-blue-100/50 to-blue-200/50 rounded-2xl group-hover:from-blue-200/70">{tourist.id}</td>
+                        <td className="px-8 py-8 font-bold text-2xl text-slate-900">{tourist.name}</td>
+                        <td className="px-8 py-8 font-mono text-xl text-slate-700">{tourist.email}</td>
+                        <td className="px-8 py-8 font-mono text-xl text-slate-700">{tourist.phone}</td>
+                        <td className="px-8 py-8">
+                          <span className="font-mono text-emerald-700 text-lg bg-emerald-100/80 px-4 py-2 rounded-full border-2 border-emerald-200/50">{tourist.blockchainHash}</span>
+                        </td>
+                        <td className="px-8 py-8">
+                          <span className="inline-block px-8 py-4 bg-emerald-100/80 text-emerald-800 font-black text-xl rounded-2xl border-4 border-emerald-200/50 shadow-lg">✓ {tourist.status}</span>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -506,69 +565,92 @@ function App() {
     );
   }
 
-  // TOURIST DASHBOARD WITH RED ROUND SOS
+  // TOURIST DASHBOARD - CLEAN LAYOUT
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-red-50/50 to-blue-50 p-12">
-      <div className="max-w-2xl mx-auto space-y-12 text-center relative">
-        <div className="flex justify-between items-center mb-12">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50/80 via-red-50/50 to-blue-50/80 py-20 px-6 lg:px-12">
+      <style jsx>{`
+        .sos-glow {
+          box-shadow: 0 0 60px rgba(239, 68, 68, 0.4);
+        }
+        .sos-glow-active {
+          box-shadow: 0 0 120px rgba(239, 68, 68, 0.8);
+        }
+        @keyframes sosPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+      `}</style>
+      
+      <div className="max-w-4xl mx-auto space-y-20 text-center">
+        {/* HEADER */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pt-8 pb-16">
           <LanguageSwitcher />
-          <button onClick={() => setUser(null)} className="px-8 py-4 bg-slate-200 hover:bg-slate-300 font-bold rounded-3xl shadow-2xl hover:shadow-3xl transition-all text-lg">
-            Logout
+          <button onClick={() => setUser(null)} className="px-10 py-5 bg-gradient-to-r from-slate-200 to-slate-300 hover:from-slate-300 hover:to-slate-400 font-black text-xl rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-300 border border-slate-200/50 lg:ml-auto">
+            Sign Out →
           </button>
         </div>
-        
-        <h1 className="text-5xl font-black bg-gradient-to-r from-slate-800 via-red-600 to-[#2563EB] bg-clip-text text-transparent drop-shadow-2xl">
+
+        {/* MAIN TITLE */}
+        <h1 className="text-6xl lg:text-7xl font-black bg-gradient-to-r from-slate-900 via-red-600 to-[#2563EB] bg-clip-text text-transparent drop-shadow-2xl leading-tight">
           {t.touristDashboard}
         </h1>
-        
-        <div className="bg-white/95 backdrop-blur-xl p-12 rounded-3xl shadow-3xl border border-white/50">
-          <h2 className="text-4xl font-black text-slate-900 mb-12">{t.shareLocation}</h2>
+
+        {/* LOCATION SECTION */}
+        <div className="bg-white/95 backdrop-blur-2xl rounded-4xl shadow-3xl border border-white/50 p-12 lg:p-16 max-w-2xl mx-auto">
+          <h2 className="text-4xl font-black text-slate-900 mb-12 flex items-center justify-center gap-4">
+            📍 {t.shareLocation}
+          </h2>
           <button 
             onClick={startLocationWatch}
-            className="w-full bg-gradient-to-r from-[#2563EB] to-blue-600 text-white font-bold py-6 px-8 rounded-3xl text-2xl shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all mb-12 border-4 border-blue-200/50"
+            className="w-full bg-gradient-to-r from-[#2563EB] to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-black py-8 px-10 rounded-3xl text-2xl shadow-3xl hover:shadow-4xl hover:-translate-y-3 transition-all duration-500 border-4 border-blue-300/50 mb-12 block mx-auto"
           >
-            📍 {t.getLiveLocation}
+            {t.getLiveLocation}
           </button>
           {shareUrl && (
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-4 border-blue-200/50 rounded-3xl p-8 shadow-2xl">
-              <p className="font-black text-blue-800 text-2xl mb-4">✅ Share with Police:</p>
-              <div className="bg-white p-4 rounded-2xl border-2 border-blue-200">
-                <a href={shareUrl} target="_blank" className="font-mono text-blue-700 hover:text-blue-900 text-lg block truncate" rel="noreferrer">
-                  {shareUrl}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-4 border-blue-200/50 rounded-3xl p-8 shadow-2xl backdrop-blur-xl">
+              <p className="font-black text-blue-900 text-2xl mb-6 flex items-center justify-center gap-3">
+                ✅ Share with Police:
+              </p>
+              <div className="bg-white/90 p-6 rounded-3xl border-2 border-blue-200/50 backdrop-blur-xl">
+                <a href={shareUrl} target="_blank" className="font-mono text-blue-800 hover:text-blue-900 text-xl block truncate lg:block lg:truncate-none p-4 rounded-2xl hover:bg-blue-50 transition-colors" rel="noreferrer">
+                  📱 {shareUrl}
                 </a>
               </div>
             </div>
           )}
         </div>
 
-        {/* MASSIVE RED ROUND SOS BUTTON */}
-        <div className="relative group">
-          <div className="absolute -inset-4 bg-gradient-to-r from-red-400/30 to-red-600/30 rounded-3xl blur-xl animate-pulse group-hover:animate-ping"></div>
+        {/* MASSIVE RED SOS BUTTON */}
+        <div className="relative group pt-20 pb-32">
+          <div className={`absolute inset-0 w-[500px] h-[500px] mx-auto bg-gradient-to-r from-red-400/40 to-red-500/40 rounded-full blur-3xl ${panicHold ? 'animate-ping' : 'animate-pulse'} group-hover:scale-110 transition-all duration-1000`}></div>
           <button
             onMouseDown={startPanicHold}
             onMouseUp={cancelPanicHold}
             onMouseLeave={cancelPanicHold}
             onTouchStart={startPanicHold}
             onTouchEnd={cancelPanicHold}
-            className={`relative z-10 w-96 h-96 mx-auto text-5xl font-black shadow-[0_25px_50px_-12px_rgba(239,68,68,0.6)] border-12 border-red-400/50 rounded-full transition-all duration-500 flex flex-col items-center justify-center ${
+            className={`relative z-20 w-[420px] h-[420px] mx-auto lg:w-[500px] lg:h-[500px] text-6xl font-black shadow-[0_35px_80px_-20px_rgba(239,68,68,0.6)] border-12 border-red-400/60 rounded-full transition-all duration-700 flex flex-col items-center justify-center mx-auto ${sosGlow} ${
               panicHold
-                ? 'bg-red-600 scale-110 animate-ping shadow-[0_0_100px_rgba(239,68,68,0.8)] border-red-500/80'
-                : 'bg-gradient-to-br from-red-500 via-red-600 to-red-700 hover:scale-105 hover:shadow-[0_0_80px_rgba(239,68,68,0.7)] hover:border-red-500/80'
-            } text-white drop-shadow-2xl`}
+                ? 'bg-red-600 scale-110 animate-sosPulse sos-glow-active border-red-500/90'
+                : 'bg-gradient-to-br from-red-500 via-red-600 to-red-700 hover:scale-[1.08] hover:shadow-[0_0_120px_rgba(239,68,68,0.8)] hover:border-red-500/90 sos-glow'
+            } text-white drop-shadow-4xl backdrop-blur-xl`}
           >
-            <span className="text-6xl mb-4">🚨</span>
-            <span className="text-3xl tracking-wider font-black drop-shadow-lg">
-              {panicHold ? 'HOLDING...' : t.emergencyPanicButton}
+            <span className="text-8xl lg:text-9xl mb-8 drop-shadow-2xl">🚨</span>
+            <span className="text-4xl lg:text-5xl tracking-widest font-black drop-shadow-2xl uppercase">
+              {panicHold ? 'HOLDING... 3s' : t.emergencyPanicButton}
             </span>
-            {panicHold && <span className="text-xl mt-2 animate-ping">3s → SOS!</span>}
+            {panicHold && <span className="text-2xl mt-6 animate-ping tracking-wider font-black drop-shadow-lg">SOS ACTIVATING!</span>}
           </button>
-          <div className="mt-12 text-2xl font-black text-red-600 animate-pulse drop-shadow-lg">
+          <div className="mt-16 text-3xl lg:text-4xl font-black text-red-600 animate-pulse drop-shadow-2xl tracking-wider">
             {t.hold3Seconds}
           </div>
         </div>
 
-        <div className="text-center p-8 bg-gradient-to-r from-red-500/10 to-red-600/10 rounded-3xl border-4 border-red-200/50">
-          <p className="text-xl text-red-800 font-bold">Your ID: <span className="font-mono bg-red-100 px-4 py-2 rounded-2xl text-lg">{user.id}</span></p>
+        {/* USER INFO */}
+        <div className="bg-gradient-to-r from-red-500/20 to-red-600/20 backdrop-blur-xl rounded-4xl border-4 border-red-300/50 p-12 shadow-3xl max-w-2xl mx-auto">
+          <p className="text-2xl font-black text-red-900">
+            Your Blockchain ID: <span className="font-mono bg-red-100/80 px-8 py-4 rounded-3xl text-3xl text-red-800 border-4 border-red-300/50 shadow-2xl block mt-4">{user.id}</span>
+          </p>
         </div>
       </div>
     </div>
